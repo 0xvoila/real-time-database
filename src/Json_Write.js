@@ -1,3 +1,6 @@
+var MongoClient = require('mongodb').MongoClient;
+var url = 'mongodb://root:2June1989!@voila-cluster-shard-00-00-45vfv.mongodb.net:27017,voila-cluster-shard-00-01-45vfv.mongodb.net:27017,voila-cluster-shard-00-02-45vfv.mongodb.net:27017/test?ssl=true&replicaSet=voila-cluster-shard-0&authSource=admin'
+
 var getJson = function(json){
 
     //your object
@@ -41,9 +44,26 @@ var parseJsonToFindAbsolutePath =  function (json,absolutePath){
 
     else {
       console.log(absolutePath + "/" + key,  json[key]);
+      // now insert into mongo db
+      insertIntoMongo(absolutePath + "/" + key, json[key]);
     }
   }
 }
 
+var insertIntoMongo = function(path,value){
+  console.log(url);
+  MongoClient.connect(url, function(err, db) {
+  if (err) throw err;
+    var myobj = { path: path, value: value };
+    db.collection("test").insertOne(myobj, function(err, res) {
+      if (err) throw err;
+      console.log("1 record inserted");
+      db.close();
+    });
+  });
+
+}
 
 getJson();
+
+
