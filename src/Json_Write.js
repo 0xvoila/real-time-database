@@ -2,8 +2,8 @@ var getJson = function(json){
 
     //your object
   var json = {
-      foo:"bar",
-      //arr:[1,2,3],
+      //foo:"bar",
+      arr:[1,2,3],
       subo: {
           foo2:{
             foo3 : "bar3"
@@ -24,6 +24,15 @@ var parseJsonToFindAbsolutePath =  function (json,absolutePath){
     // Check if it is nested json
     if(json[key] != null  && Array.isArray(json[key])){
       // if it is arry then handle convert array into json
+      // create a new json
+      var newJson = {}
+
+      for( var i = 0; i < json[key].length; i ++){
+        var timestamp = Math.floor(Math.random() * 100000);
+        newJson[timestamp] = json[key][i];
+        //console.log(timestamp);
+      }
+      parseJsonToFindAbsolutePath(newJson,absolutePath + "/" + key);
     }
 
     else if (json[key] != null && typeof(json[key])=="object"){
