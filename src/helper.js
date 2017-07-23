@@ -1,4 +1,5 @@
 var jsonParse = [];
+var generateId = require('time-uuid');
 
 exports.getImmediateParent = function(path){
   var pathArray = path.split("/");
@@ -44,4 +45,15 @@ exports.parseJsonToFindAbsolutePath =  function (firebaseReference,json){
   }
 
   return jsonParse;
+}
+
+exports.convertArrayToJson = function(json){
+
+  var newJson = {};
+  // now generate firebase key
+  var myId = generateId();
+  newJson[myId] = json;
+  console.log(newJson);
+  return newJson;
+
 }
