@@ -2,16 +2,26 @@ var helper = require('./helper.js');
 var database = require('./database.js');
 
    //your object
-  var json = {
-      //foo:"bar",
-      //arr:[1,2,3],
-      suboo: {
-          foo2:{
-            foo3 : "bar4"
-          }
-      }
-  };
+//   var json = {
+//   "users": {
+//     "alanisawesome": {
+//       "date_of_birth": "June 23, 1912",
+//       "full_name": "Alan Turing"
+//     },
+//     "gracehop": {
+//       "date_of_birth": "December 9, 1906",
+//       "full_name": "Grace Hopper",
+//     }
+//   }
+// };
 
+var json = {
+    "users": {
+      "gracehop": {
+        "nick_name" : "loosy"
+      }
+    }
+  };
 var setData = function(firebaseReference, json){
 
   var flatTree = helper.parseJsonToFindAbsolutePath(firebaseReference,json);

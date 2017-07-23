@@ -33,9 +33,9 @@ exports.updateLeaf = function(path,element,value){
   MongoClient.connect(url, function(err, db) {
   if (err) throw err;
     var queryObj = {abs_path: path, element:element}
-    var myobj = { $set:{value: value }};
+    var myobj = { abs_path:path, element:element,value: value };
     console.log(queryObj);
-    db.collection("test").updateOne(queryObj,myobj, function(err, res) {
+    db.collection("test").updateOne(queryObj,myobj, {upsert:true} ,function(err, res) {
       if (err) throw err;
       db.close();
     });
