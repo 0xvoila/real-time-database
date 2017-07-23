@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "mongodb": "^2.2.30",
+    "request": "^2.81.0",
     "time-uuid": "^1.0.0"
   }
 }

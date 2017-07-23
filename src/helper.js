@@ -1,5 +1,6 @@
 var jsonParse = [];
 var generateId = require('time-uuid');
+var request = require('request');
 
 exports.getImmediateParent = function(path){
   var pathArray = path.split("/");
@@ -12,6 +13,17 @@ exports.getChildKeyFromPath = function(path){
   var childKey = pathArray.pop();
   return childKey;
 
+}
+
+exports.postUpdates = function(path,data){
+
+    request.post({
+      url: 'http://13.126.96.13/updates',
+      body: data,
+      json: true
+    }, function(error, response, body){
+    console.log(body);
+  });
 }
 
 exports.parseJsonToFindAbsolutePath =  function (firebaseReference,json){

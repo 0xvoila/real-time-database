@@ -1,5 +1,6 @@
 // This module contains database functions
 var helper = require('./helper.js');
+var request = require('request');
 
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://root:2June1989!@voila-cluster-shard-00-00-45vfv.mongodb.net:27017,voila-cluster-shard-00-01-45vfv.mongodb.net:27017,voila-cluster-shard-00-02-45vfv.mongodb.net:27017/test?ssl=true&replicaSet=voila-cluster-shard-0&authSource=admin'
@@ -62,8 +63,7 @@ exports.createSnapshot = function(path){
     console.log(findObj);
     db.collection("test").find(findObj).snapshot().toArray(function(err, res) {
       if (err) throw err;
-
-      console.log(res);
+      helper.postUpdates(path,res);
       db.close();
     });
   });
