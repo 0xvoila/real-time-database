@@ -63,7 +63,8 @@ exports.createSnapshot = function(path){
     console.log(findObj);
     db.collection("test").find(findObj).snapshot().toArray(function(err, res) {
       if (err) throw err;
-      helper.postUpdates(path,res);
+      console.log(res);
+      helper.postUpdates(path,{"body":res});
       db.close();
     });
   });

@@ -17,9 +17,11 @@ exports.getChildKeyFromPath = function(path){
 
 exports.postUpdates = function(path,data){
 
+    //Custom Header pass
     request.post({
       url: 'http://13.126.96.13/updates',
       body: data,
+      headers:  { "content-type": "application/json"},
       json: true
     }, function(error, response, body){
     console.log(body);
