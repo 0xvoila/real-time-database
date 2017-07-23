@@ -21,7 +21,6 @@ exports.deleteSubTree = function(reference){
   MongoClient.connect(url, function(err, db) {
   if (err) throw err;
     var myobj = { abs_path: new RegExp( '^' + reference)};
-    console.log(myobj);
     db.collection("test").remove(myobj, function(err, res) {
       if (err) throw err;
       db.close();

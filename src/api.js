@@ -42,10 +42,10 @@ var setData = function(firebaseReference, json){
     var obj = {
       abs_path : flatTree[i].abs_path,
       element : flatTree[i].element,
-      value : value
+      value : flatTree[i].value
     }
 
-     database.updateLeaf(obj.abs_path,obj.element,obj.value);
+     database.insertLeaf(obj.abs_path,obj.element,obj.value);
      kinesis.putRecord({Data:JSON.stringify({Data:obj}),StreamName:'firebase-events',PartitionKey:"set_data"},function(err,data){
         if(err) console.log("error in putting data", err);
         else console.log("set data in kinses");
@@ -61,7 +61,7 @@ var updateData = function(firebaseReference, json){
       var obj = {
         abs_path : flatTree[i].abs_path,
         element : flatTree[i].element,
-        value : value
+        value : flatTree[i].value
     }
      database.updateLeaf(obj.abs_path,obj.element,obj.value);
      kinesis.putRecord({Data:JSON.stringify({Data:obj}),StreamName:'firebase-events',PartitionKey:"update_data"},function(err,data){
@@ -77,6 +77,11 @@ var pushData = function(firebaseReference,json){
   var flatTree = helper.parseJsonToFindAbsolutePath(firebaseReference,newJson);
 
    for(var i =0; i< flatTree.length;i++){
+      var obj = {
+        abs_path : flatTree[i].abs_path,
+        element : flatTree[i].element,
+        value : flatTree[i].value
+    }
      database.updateLeaf(obj.abs_path,obj.element,obj.value);
      kinesis.putRecord({Data:JSON.stringify({Data:obj}),StreamName:'firebase-events',PartitionKey:"push_data"},function(err,data){
         if(err) console.log("error in putting data", err);
@@ -91,6 +96,6 @@ var createSnapshot = function(){
 }
 
 //createSnapshot();
-//setData(",messages",json1);
+setData(",messages",json1);
 //updateData(",messages",json2);
 //pushData(",messages",json3);

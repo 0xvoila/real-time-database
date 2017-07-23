@@ -52,7 +52,6 @@ exports.convertArrayToJson = function(json){
   // now generate firebase key
   var myId = generateId();
   newJson[myId] = json;
-  console.log(newJson);
   return newJson;
 }
 
