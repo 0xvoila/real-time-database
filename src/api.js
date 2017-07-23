@@ -1,5 +1,8 @@
 var helper = require('./helper.js');
 var database = require('./database.js');
+var aws = require('aws-sdk');
+
+var kinesis = new aws.Kinesis({region : 'ap-south-1'});
 
    //your object
   var json1 = {
@@ -36,7 +39,17 @@ var setData = function(firebaseReference, json){
   database.deleteSubTree(firebaseReference);
 
    for(var i =0; i< flatTree.length;i++){
-     database.insertLeaf(flatTree[i].abs_path,flatTree[i].element,flatTree[i].value);
+    var obj = {
+      abs_path : flatTree[i].abs_path,
+      element : flatTree[i].element,
+      value : value
+    }
+
+     database.updateLeaf(obj.abs_path,obj.element,obj.value);
+     kinesis.putRecord({Data:JSON.stringify({Data:obj}),StreamName:'firebase-events',PartitionKey:"set_data"},function(err,data){
+        if(err) console.log("error in putting data", err);
+        else console.log("set data in kinses");
+     })
   }
 }
 
@@ -45,7 +58,16 @@ var updateData = function(firebaseReference, json){
   var flatTree = helper.parseJsonToFindAbsolutePath(firebaseReference,json);
 
    for(var i =0; i< flatTree.length;i++){
-     database.updateLeaf(flatTree[i].abs_path,flatTree[i].element,flatTree[i].value);
+      var obj = {
+        abs_path : flatTree[i].abs_path,
+        element : flatTree[i].element,
+        value : value
+    }
+     database.updateLeaf(obj.abs_path,obj.element,obj.value);
+     kinesis.putRecord({Data:JSON.stringify({Data:obj}),StreamName:'firebase-events',PartitionKey:"update_data"},function(err,data){
+        if(err) console.log("error in putting data", err);
+        else console.log("update data in kinses");
+     })
   }
 }
 
@@ -55,10 +77,20 @@ var pushData = function(firebaseReference,json){
   var flatTree = helper.parseJsonToFindAbsolutePath(firebaseReference,newJson);
 
    for(var i =0; i< flatTree.length;i++){
-     database.updateLeaf(flatTree[i].abs_path,flatTree[i].element,flatTree[i].value);
+     database.updateLeaf(obj.abs_path,obj.element,obj.value);
+     kinesis.putRecord({Data:JSON.stringify({Data:obj}),StreamName:'firebase-events',PartitionKey:"push_data"},function(err,data){
+        if(err) console.log("error in putting data", err);
+        else console.log("push data in kinses");
+     })
   }
 }
 
+var createSnapshot = function(){
+
+  database.createSnapshot(",messages,");
+}
+
+//createSnapshot();
 //setData(",messages",json1);
 //updateData(",messages",json2);
-pushData(",messages",json3);
+//pushData(",messages",json3);

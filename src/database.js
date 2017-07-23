@@ -56,32 +56,15 @@ exports.deleteData = function(path,value){
   });
 }
 
-exports.getData = function(path){
-  MongoClient.connect(url, function(err, db) {
-  if (err) throw err;
-    var myobj = { path: path, value: value };
-    db.collection("test").insertOne(myobj, function(err, res) {
-      if (err) throw err;
-
-      // now create the snapshot of the data
-      createSnapshot(res.insertedId,path)
-      db.close();
-    });
-  });
-}
-
-exports.getChildrenAtLocation = function(path){
+exports.createSnapshot = function(path){
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
-
-    var parent = helper.getImmediateParent(path);
-
-    var findObj = { path: "/^" + parent + "\//"};
-    var sortObj = {created_at : 1};
-    db.collection("test").find(myobj).sort(sortObj).toArray(function(err, res) {
+    var findObj = { abs_path: new RegExp("^" + path)};
+    console.log(findObj);
+    db.collection("test").find(findObj).snapshot().toArray(function(err, res) {
       if (err) throw err;
 
-      return result;
+      console.log(res);
       db.close();
     });
   });

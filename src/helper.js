@@ -7,7 +7,6 @@ exports.getImmediateParent = function(path){
   return pathArray.join("/");
 }
 
-
 exports.getChildKeyFromPath = function(path){
   var pathArray = path.split("/");
   var childKey = pathArray.pop();
@@ -55,5 +54,5 @@ exports.convertArrayToJson = function(json){
   newJson[myId] = json;
   console.log(newJson);
   return newJson;
-
 }
+
