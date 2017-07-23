@@ -95,7 +95,7 @@ var createSnapshot = function(){
   database.createSnapshot(",messages,");
 }
 
-//createSnapshot();
-setData(",messages",json1);
+createSnapshot();
+//setData(",messages",json1);
 //updateData(",messages",json2);
 //pushData(",messages",json3);
