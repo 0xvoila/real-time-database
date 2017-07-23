@@ -29,15 +29,14 @@ exports.deleteSubTree = function(reference){
   });
 }
 
-exports.updateData = function(path,value){
+exports.updateLeaf = function(path,element,value){
   MongoClient.connect(url, function(err, db) {
   if (err) throw err;
-    var myobj = { path: path, value: value };
-    db.collection("test").insertOne(myobj, function(err, res) {
+    var queryObj = {abs_path: path, element:element}
+    var myobj = { $set:{value: value }};
+    console.log(queryObj);
+    db.collection("test").updateOne(queryObj,myobj, function(err, res) {
       if (err) throw err;
-
-      // now create the snapshot of the data
-      createSnapshot(res.insertedId,path)
       db.close();
     });
   });
@@ -47,7 +46,7 @@ exports.deleteData = function(path,value){
   MongoClient.connect(url, function(err, db) {
   if (err) throw err;
     var myobj = { path: path, value: value };
-    db.collection("test").insertOne(myobj, function(err, res) {
+    db.collection("test").updateOne(myobj, function(err, res) {
       if (err) throw err;
 
       // now create the snapshot of the data
