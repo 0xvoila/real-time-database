@@ -15,3 +15,30 @@
         </script>
     </body>
 </html>
+
+
+ function(result,callback){
+        async.each(records, function(record,callback){
+            var obj = {
+              abs_path : record.abs_path,
+              element : record.element,
+              value : record.value
+            }
+            database.insertLeaf(obj.abs_path,obj.element,obj.value,callback);
+        }, function(error,response){
+            if (error) throw error;
+            console.log("all good" + error);
+            callback(null,response);
+        })
+      },
+      function(result, callback){
+        async.each(records, function(record,callback){
+            console.log("adding to kinesis");
+            kinesis.putRecord({Data:JSON.stringify({Data:record}),StreamName:'firebase-events',PartitionKey:"set_data"},callback)
+        }, function(error, response){
+          if (error) throw error;
+            console.log("all good here too");
+            callback(null,'amit');
+        })
+      }
+

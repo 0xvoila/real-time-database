@@ -6,7 +6,7 @@ var async = require('async');
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://root:2June1989!@voila-cluster-shard-00-00-45vfv.mongodb.net:27017,voila-cluster-shard-00-01-45vfv.mongodb.net:27017,voila-cluster-shard-00-02-45vfv.mongodb.net:27017/test?ssl=true&replicaSet=voila-cluster-shard-0&authSource=admin'
 
-exports.insertLeaf = function(path,element,value){
+exports.insertLeaf = function(path,element,value,_callback){
   async.waterfall([
     function(callback){
       MongoClient.connect(url,callback);
@@ -17,24 +17,35 @@ exports.insertLeaf = function(path,element,value){
     }
   ],
     function(error,result){
-      if (error) throw error;
+      if (error) {
+        return _callback(error)
+      }
+      return _callback(null,result)
     }
   )
 };
 
 
-exports.deleteSubTree = function(reference){
+exports.deleteSubTree = function(reference, _callback){
+
   async.waterfall([
     function(callback){
       MongoClient.connect(url,callback);
+      //callback(null,'amit');
     },
     function(db,callback){
-      var firebaseRecord = { abs_path: new RegExp( '^' + reference)};
-      db.collection("test").remove(firebaseRecord, callback);
+
+      //var firebaseRecord = { abs_path: new RegExp( '^' + reference)};
+      //db.collection("test").remove(firebaseRecord, callback);
+      callback();
     }
   ],
     function(error,result){
-      if (error) throw error;
+      if (error) {
+        _callback(error);
+      }
+      //console.log("all good" + _callback);
+      _callback(null,result);
     }
   )
 }
