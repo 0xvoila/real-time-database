@@ -36,18 +36,27 @@ var setData = function(firebaseReference, json){
 
   var records = helper.parseJsonToFindAbsolutePath(firebaseReference,json);
   // delete subtree at reference
+  async.each(records,function(record,callback){
 
-  async.waterfall([
-       function(callback){
-          database.deleteSubTree(firebaseReference, callback);
-          //callback();
-       }
-  ], function(error, result){
-    if (error) throw error;
-    console.log("I am here boss" + result);
-    return;
-    //return result;
-  })
+        async.series([function(callback){
+
+            database.deleteSubTree(firebaseReference, callback);
+          },
+          function(callback){
+            database.insertLeaf(record.abs_path,record.element,record.value, callback);
+          }],
+
+          function(error, result){
+            if(error) throw error;
+            console.log("insertion done")
+            callback();
+          })
+       },
+
+       function(error, result){
+        if (error) throw error;
+        console.log("all insertion done")
+      })
 }
 
 var updateData = function(firebaseReference, json){
@@ -60,6 +69,7 @@ var updateData = function(firebaseReference, json){
         element : flatTree[i].element,
         value : flatTree[i].value
     }
+    console.log(obj);
      database.updateLeaf(obj.abs_path,obj.element,obj.value);
      kinesis.putRecord({Data:JSON.stringify({Data:obj}),StreamName:'firebase-events',PartitionKey:"update_data"},function(err,data){
         if(err) console.log("error in putting data", err);

@@ -2,11 +2,14 @@
 var helper = require('./helper.js');
 var request = require('request');
 var async = require('async');
+var request = require('request');
 
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://root:2June1989!@voila-cluster-shard-00-00-45vfv.mongodb.net:27017,voila-cluster-shard-00-01-45vfv.mongodb.net:27017,voila-cluster-shard-00-02-45vfv.mongodb.net:27017/test?ssl=true&replicaSet=voila-cluster-shard-0&authSource=admin'
+var db = null;
 
 exports.insertLeaf = function(path,element,value,_callback){
+
   async.waterfall([
     function(callback){
       MongoClient.connect(url,callback);
@@ -14,6 +17,7 @@ exports.insertLeaf = function(path,element,value,_callback){
     function(db,callback){
       var firebaseRecord = { abs_path: path, element: element , value: value };
       db.collection("test").insertOne(firebaseRecord, callback);
+      db.close();
     }
   ],
     function(error,result){
@@ -26,26 +30,25 @@ exports.insertLeaf = function(path,element,value,_callback){
 };
 
 
+
 exports.deleteSubTree = function(reference, _callback){
 
-  async.waterfall([
+async.waterfall([
     function(callback){
       MongoClient.connect(url,callback);
-      //callback(null,'amit');
     },
     function(db,callback){
 
-      //var firebaseRecord = { abs_path: new RegExp( '^' + reference)};
-      //db.collection("test").remove(firebaseRecord, callback);
-      callback();
+      var firebaseRecord = { abs_path: new RegExp( '^' + reference)};
+      db.collection("test").remove(firebaseRecord, callback);
+      db.close();
     }
   ],
     function(error,result){
       if (error) {
         _callback(error);
       }
-      //console.log("all good" + _callback);
-      _callback(null,result);
+      _callback(null);
     }
   )
 }
@@ -59,6 +62,7 @@ exports.updateLeaf = function(path,element,value){
       var queryObj = {abs_path: path, element:element}
       var firebaseRecord = { abs_path: path, element: element , value: value };
       db.collection("test").updateOne(queryObj,firebaseRecord, {upsert:true} ,callback);
+      db.close();
     }
   ],
     function(error,result){
@@ -77,6 +81,7 @@ exports.createSnapshot = function(path){
     function(db,callback){
       var firebaseRecord = { abs_path: new RegExp("^" + path)};
       db.collection("test").find(firebaseRecord).snapshot().toArray(callback);
+      db.close();
     }
   ],
     function(error,result){
