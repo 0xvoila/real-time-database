@@ -6,23 +6,20 @@ var async = require('async');
 var kinesis = new aws.Kinesis({region : 'ap-south-1'});
 
    //your object
-//   var json1 = {
-//   "users": {
-//     "alanisawesome": {
-//       "date_of_birth": "June 23, 1912",
-//       "full_name": "Alan Turing"
-//     },
-//     "gracehop": {
-//       "date_of_birth": "December 9, 1906",
-//       "full_name": "Grace Hopper",
-//     }
-//   }
-// };
-//
+  var json1 = {
+  "users": {
+    "alanisawesome": {
+      "date_of_birth": "June 23, 1912",
+      "full_name": "Alan Turing"
+    },
+    "gracehop": {
+      "date_of_birth": "December 9, 1906",
+      "full_name": "Grace Hopper",
+    }
+  }
+};
 
-var json1 = {
-  "name" :"amit"
-}
+
 
 var json2 = {
     "users": {
