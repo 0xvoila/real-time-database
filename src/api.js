@@ -6,18 +6,23 @@ var async = require('async');
 var kinesis = new aws.Kinesis({region : 'ap-south-1'});
 
    //your object
-  var json1 = {
-  "users": {
-    "alanisawesome": {
-      "date_of_birth": "June 23, 1912",
-      "full_name": "Alan Turing"
-    },
-    "gracehop": {
-      "date_of_birth": "December 9, 1906",
-      "full_name": "Grace Hopper",
-    }
-  }
-};
+//   var json1 = {
+//   "users": {
+//     "alanisawesome": {
+//       "date_of_birth": "June 23, 1912",
+//       "full_name": "Alan Turing"
+//     },
+//     "gracehop": {
+//       "date_of_birth": "December 9, 1906",
+//       "full_name": "Grace Hopper",
+//     }
+//   }
+// };
+//
+
+var json1 = {
+  "name" :"amit"
+}
 
 var json2 = {
     "users": {
@@ -46,8 +51,8 @@ var setData = function(firebaseReference, json){
             database.insertLeaf(record.abs_path,record.element,record.value, callback);
           },
           function(callback){
-              record.eventName = 'value';
-              kinesis.putRecord({Data:JSON.stringify({Data:record}),StreamName:'firebase-events',PartitionKey:"set_data"},callback);
+              record.event_type = 'value';
+              kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"set_data"},callback);
           }],
 
           function(error, result){
@@ -75,8 +80,8 @@ var updateData = function(firebaseReference, json){
           },
           function(callback){
               console.log("writing to kinesis")
-              record.eventName = 'value';
-              kinesis.putRecord({Data:JSON.stringify({Data:record}),StreamName:'firebase-events',PartitionKey:"update_data"},callback);
+              record.event_type = 'value';
+              kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"update_data"},callback);
           }],
 
           function(error, result){
@@ -105,8 +110,8 @@ var pushData = function(firebaseReference,json){
           },
           function(callback){
               console.log("writing to kinesis")
-              record.eventName = 'child_added';
-              kinesis.putRecord({Data:JSON.stringify({Data:record}),StreamName:'firebase-events',PartitionKey:"child_added"},callback);
+              record.event_type = 'child_added';
+              kinesis.putRecord({Data:JSON.stringify(recordNew),StreamName:'firebase-events',PartitionKey:"child_added"},callback);
           }],
 
           function(error, result){
@@ -122,19 +127,6 @@ var pushData = function(firebaseReference,json){
       })
 }
 
-var createSnapshot = function(){
-
-  async.series([function(callback){
-    database.createSnapshot(",messages,", callback);
-  }],
-  function(error, result){
-    if(error) throw error;
-    console.log(result);
-  })
-
-}
-
-createSnapshot();
-//setData(",messages",json1);
+setData(",messages",json1);
 //updateData(",messages",json2);
 //pushData(",messages",json3);

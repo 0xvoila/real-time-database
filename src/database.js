@@ -2,7 +2,6 @@
 var helper = require('./helper.js');
 var request = require('request');
 var async = require('async');
-var request = require('request');
 
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://root:2June1989!@voila-cluster-shard-00-00-45vfv.mongodb.net:27017,voila-cluster-shard-00-01-45vfv.mongodb.net:27017,voila-cluster-shard-00-02-45vfv.mongodb.net:27017/test?ssl=true&replicaSet=voila-cluster-shard-0&authSource=admin'
