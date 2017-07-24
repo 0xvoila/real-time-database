@@ -121,10 +121,17 @@ var pushData = function(firebaseReference,json){
 
 var createSnapshot = function(){
 
-  database.createSnapshot(",messages,");
+  async.series([function(callback){
+    database.createSnapshot(",messages,", callback);
+  }],
+  function(error, result){
+    if(error) throw error;
+    console.log(result);
+  })
+
 }
 
-//createSnapshot();
+createSnapshot();
 //setData(",messages",json1);
 //updateData(",messages",json2);
-pushData(",messages",json3);
+//pushData(",messages",json3);

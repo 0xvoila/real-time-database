@@ -9,7 +9,6 @@ exports.handler = (event, context, callback) => {
         // Kinesis data is base64 encoded so decode here
         const payload = new Buffer(record.kinesis.data, 'base64').toString('ascii');
         database.createSnapshot(",messages,");
-        // now make
     });
     callback(null, `Successfully processed ${event.Records.length} records.`);
 };

@@ -72,13 +72,12 @@ exports.updateLeaf = function(path,element,value, _callback){
   )
 }
 
-exports.createSnapshot = function(path){
+exports.createSnapshot = function(path,whereQuery, limitLast, _callback){
 
   async.waterfall([
     function(callback){
       MongoClient.connect(url,callback);
     },
-
     function(db,callback){
       var firebaseRecord = { abs_path: new RegExp("^" + path)};
       db.collection("test").find(firebaseRecord).snapshot().toArray(callback);
@@ -86,21 +85,11 @@ exports.createSnapshot = function(path){
     }
   ],
     function(error,result){
-      if (error) throw error;
-      return result;
+       if (error) {
+        _callback(error);
+      }
+      _callback(null,result);
     }
   )
-
-  // MongoClient.connect(url, function(err, db) {
-  //   if (err) throw err;
-  //   var findObj = { abs_path: new RegExp("^" + path)};
-  //   console.log(findObj);
-  //   db.collection("test").find(findObj).snapshot().toArray(function(err, res) {
-  //     if (err) throw err;
-  //     console.log(res);
-  //     helper.postUpdates(path,{"body":res});
-  //     db.close();
-  //   });
-  // });
 }
 
