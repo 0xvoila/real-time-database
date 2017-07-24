@@ -44,6 +44,9 @@ var setData = function(firebaseReference, json){
           },
           function(callback){
             database.insertLeaf(record.abs_path,record.element,record.value, callback);
+          },
+          function(callback){
+              kinesis.putRecord({Data:JSON.stringify({Data:record}),StreamName:'firebase-events',PartitionKey:"set_data"},callback);
           }],
 
           function(error, result){
@@ -55,46 +58,65 @@ var setData = function(firebaseReference, json){
 
        function(error, result){
         if (error) throw error;
-        console.log("all insertion done")
+        console.log("all done")
       })
 }
 
 var updateData = function(firebaseReference, json){
 
-  var flatTree = helper.parseJsonToFindAbsolutePath(firebaseReference,json);
+  var records = helper.parseJsonToFindAbsolutePath(firebaseReference,json);
+  // delete subtree at reference
+  async.each(records,function(record,callback){
 
-   for(var i =0; i< flatTree.length;i++){
-      var obj = {
-        abs_path : flatTree[i].abs_path,
-        element : flatTree[i].element,
-        value : flatTree[i].value
-    }
-    console.log(obj);
-     database.updateLeaf(obj.abs_path,obj.element,obj.value);
-     kinesis.putRecord({Data:JSON.stringify({Data:obj}),StreamName:'firebase-events',PartitionKey:"update_data"},function(err,data){
-        if(err) console.log("error in putting data", err);
-        else console.log("update data in kinses");
-     })
-  }
+        async.series([function(callback){
+
+            database.updateLeaf(record.abs_path,record.element,record.value, callback);
+          },
+          function(callback){
+              console.log("writing to kinesis")
+              kinesis.putRecord({Data:JSON.stringify({Data:record}),StreamName:'firebase-events',PartitionKey:"update_data"},callback);
+          }],
+
+          function(error, result){
+            if(error) throw error;
+            console.log("updation done")
+            callback();
+          })
+       },
+
+       function(error, result){
+        if (error) throw error;
+        console.log("all done")
+      })
 }
 
 var pushData = function(firebaseReference,json){
 
   var newJson = helper.convertArrayToJson(json);
-  var flatTree = helper.parseJsonToFindAbsolutePath(firebaseReference,newJson);
+  var records = helper.parseJsonToFindAbsolutePath(firebaseReference,json);
+  // delete subtree at reference
+  async.each(records,function(record,callback){
 
-   for(var i =0; i< flatTree.length;i++){
-      var obj = {
-        abs_path : flatTree[i].abs_path,
-        element : flatTree[i].element,
-        value : flatTree[i].value
-    }
-     database.updateLeaf(obj.abs_path,obj.element,obj.value);
-     kinesis.putRecord({Data:JSON.stringify({Data:obj}),StreamName:'firebase-events',PartitionKey:"push_data"},function(err,data){
-        if(err) console.log("error in putting data", err);
-        else console.log("push data in kinses");
-     })
-  }
+        async.series([function(callback){
+
+            database.updateLeaf(record.abs_path,record.element,record.value, callback);
+          },
+          function(callback){
+              console.log("writing to kinesis")
+              kinesis.putRecord({Data:JSON.stringify({Data:record}),StreamName:'firebase-events',PartitionKey:"update_data"},callback);
+          }],
+
+          function(error, result){
+            if(error) throw error;
+            console.log("updation done")
+            callback();
+          })
+       },
+
+       function(error, result){
+        if (error) throw error;
+        console.log("all done")
+      })
 }
 
 var createSnapshot = function(){
@@ -103,6 +125,6 @@ var createSnapshot = function(){
 }
 
 //createSnapshot();
-setData(",messages",json1);
+//setData(",messages",json1);
 //updateData(",messages",json2);
-//pushData(",messages",json3);
+pushData(",messages",json3);

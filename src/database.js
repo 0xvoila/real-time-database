@@ -29,8 +29,6 @@ exports.insertLeaf = function(path,element,value,_callback){
   )
 };
 
-
-
 exports.deleteSubTree = function(reference, _callback){
 
 async.waterfall([
@@ -53,7 +51,7 @@ async.waterfall([
   )
 }
 
-exports.updateLeaf = function(path,element,value){
+exports.updateLeaf = function(path,element,value, _callback){
   async.waterfall([
     function(callback){
       MongoClient.connect(url,callback);
@@ -66,7 +64,10 @@ exports.updateLeaf = function(path,element,value){
     }
   ],
     function(error,result){
-      if (error) throw error;
+      if (error) {
+        _callback(error);
+      }
+      _callback(null);
     }
   )
 }
