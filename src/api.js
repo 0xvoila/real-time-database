@@ -46,6 +46,7 @@ var setData = function(firebaseReference, json){
             database.insertLeaf(record.abs_path,record.element,record.value, callback);
           },
           function(callback){
+              record.eventName = 'value';
               kinesis.putRecord({Data:JSON.stringify({Data:record}),StreamName:'firebase-events',PartitionKey:"set_data"},callback);
           }],
 
@@ -74,6 +75,7 @@ var updateData = function(firebaseReference, json){
           },
           function(callback){
               console.log("writing to kinesis")
+              record.eventName = 'value';
               kinesis.putRecord({Data:JSON.stringify({Data:record}),StreamName:'firebase-events',PartitionKey:"update_data"},callback);
           }],
 
@@ -103,7 +105,8 @@ var pushData = function(firebaseReference,json){
           },
           function(callback){
               console.log("writing to kinesis")
-              kinesis.putRecord({Data:JSON.stringify({Data:record}),StreamName:'firebase-events',PartitionKey:"update_data"},callback);
+              record.eventName = 'child_added';
+              kinesis.putRecord({Data:JSON.stringify({Data:record}),StreamName:'firebase-events',PartitionKey:"child_added"},callback);
           }],
 
           function(error, result){
