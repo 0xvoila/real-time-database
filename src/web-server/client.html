@@ -1,18 +1,13 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>Socket.io</title>
-    </head>
-    <body>
-        <h1>Express and socket.io</h1>
-        <div id="news-list"></div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
-        <script>
-            var socket = io('http://13.126.96.13:80');
-            socket.emit('join_room', { firebase_reference: ',messages,' });
+<html lang="en-US">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script src="./angular-module/firebase-sdk.js"></script>
+<script src="./MyController.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+<body>
 
-        </script>
-    </body>
+<div ng-app="myApp">
+</div>
+
+</body>
 </html>
-
