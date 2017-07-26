@@ -5,19 +5,22 @@ var async = require('async');
 
 var kinesis = new aws.Kinesis({region : 'ap-south-1'});
 
+var json1 = {
+  "name" : "amit"
+}
    //your object
-  var json1 = {
-  "users": {
-    "alanisawesome": {
-      "date_of_birth": "June 23, 1912",
-      "full_name": "Alan Turing"
-    },
-    "gracehop": {
-      "date_of_birth": "December 9, 1906",
-      "full_name": "Grace Hopper",
-    }
-  }
-};
+//   var json1 = {
+//   "users": {
+//     "alanisawesome": {
+//       "date_of_birth": "June 23, 1912",
+//       "full_name": "Alan Turing"
+//     },
+//     "gracehop": {
+//       "date_of_birth": "December 9, 1906",
+//       "full_name": "Grace Hopper",
+//     }
+//   }
+// };
 
 
 
@@ -38,6 +41,7 @@ var setData = function(firebaseReference, json){
 
   var records = helper.parseJsonToFindAbsolutePath(firebaseReference,json);
   // delete subtree at reference
+  console.log(records);
   async.each(records,function(record,callback){
 
         async.series([function(callback){
@@ -45,9 +49,11 @@ var setData = function(firebaseReference, json){
             database.deleteSubTree(firebaseReference, callback);
           },
           function(callback){
+
             database.insertLeaf(record.abs_path,record.element,record.value, callback);
           },
           function(callback){
+
               record.event_type = 'value';
               kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"set_data"},callback);
           }],

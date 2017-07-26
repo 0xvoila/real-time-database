@@ -62,7 +62,7 @@ exports.handler = (event, context, globalCallback) => {
 
        async.each(splitPathList, function(absPath, forEachCallback){
           createDatabaseSnapShot(absPath, function(error, snapshot){
-            postUpdates(snapshot, function(error,response, body){
+            postUpdates({abs_path:absPath, snapshot:snapshot}, function(error,response, body){
               globalCallback(null)
             })
           })
