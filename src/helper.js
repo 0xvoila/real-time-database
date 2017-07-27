@@ -44,7 +44,7 @@ exports.parseJsonToFindAbsolutePath =  function (firebaseReference,json){
      module.exports.parseJsonToFindAbsolutePath(firebaseReference + "," + key,json[key]);
     }
     else {
-      jsonParse.push({abs_path:firebaseReference, element:key, value:json[key]});
+      jsonParse.push({abs_path:firebaseReference + "," + key, element:key, value:json[key]});
     }
   }
   return jsonParse;

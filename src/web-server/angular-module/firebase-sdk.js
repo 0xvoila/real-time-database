@@ -38,4 +38,16 @@ myApp.service("firebaseService", function(){
     return this
   }
 
+  this.set = function(absolutePath,data){
+    $http.post('',  data);
+  }
+
+  this.update = function(absolutePath, data){
+    $http.post('',  data);
+  }
+
+  this.push = function(absolutePath, data){
+    $http.post('',  data);
+  }
+
 })
