@@ -1,6 +1,6 @@
 var myApp = angular.module('myApp');
 
-myApp.service("firebaseService", function(){
+myApp.service("firebaseService", function($http){
   this.databaseUrl = null;
 
   this.database = function(databaseUrl){
