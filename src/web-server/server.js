@@ -17,7 +17,7 @@ app.get('/', function (req, res) {
 });
 
 // Expose the node_modules folder as static resources (to access socket.io.js in the browser)
-app.use('/static', express.static('node_modules'));
+app.use('/', express.static(__dirname + '/'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
