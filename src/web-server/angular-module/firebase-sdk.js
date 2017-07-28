@@ -38,16 +38,16 @@ myApp.service("firebaseService", function(){
     return this
   }
 
-  this.set = function(absolutePath,data){
-    $http.post('',  data);
+  this.set = function(absolutePath,data,callback){
+    $http.post('https://hdc1vqp7y0.execute-api.ap-south-1.amazonaws.com/prod/set',  data);
   }
 
-  this.update = function(absolutePath, data){
-    $http.post('',  data);
+  this.update = function(absolutePath, data, callback){
+    $http.post('https://hdc1vqp7y0.execute-api.ap-south-1.amazonaws.com/prod/update',  data);
   }
 
-  this.push = function(absolutePath, data){
-    $http.post('',  data);
+  this.push = function(absolutePath, data, callback){
+    $http.post('https://hdc1vqp7y0.execute-api.ap-south-1.amazonaws.com/prod/push',  data);
   }
 
 })
