@@ -6,5 +6,5 @@ var myController = myApp.controller('myController',function(firebaseService){
     console.log(data);
   })
 
-  firebaseService.set(",messages",{"name":"amit"});
+  firebaseService.update(",messages",{"name":"amit"});
 });
