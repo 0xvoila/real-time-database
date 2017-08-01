@@ -35,7 +35,8 @@ exports.parseJsonToFindAbsolutePath =  function (firebaseReference,json){
     if(json[key] != null  && Array.isArray(json[key])){
       var newJson = {}
       for( var i = 0; i < json[key].length; i ++){
-        var timestamp = Math.floor(Math.random() * 100000);
+        var timestamp = new Date().getTime();
+        timestamp = timestamp.toString(16);
         newJson[timestamp] = json[key][i];
       }
       module.exports.parseJsonToFindAbsolutePath(firebaseReference + "," + key,newJson);
