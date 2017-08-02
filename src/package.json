@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "async": "^2.5.0",
+    "microtime": "^2.1.6",
     "mongodb": "^2.2.30",
     "request": "^2.81.0",
     "time-uuid": "^1.0.0"

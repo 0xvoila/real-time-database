@@ -1,7 +1,6 @@
 var generateId = require('time-uuid');
 var request = require('request');
 
-
 var helper = (function(){
 
   this.jsonParse = [];
@@ -28,6 +27,7 @@ var helper = (function(){
         var newJson = {}
         for( var i = 0; i < json[key].length; i ++){
           var timestamp = new Date().getTime();
+          timestamp = timestamp + i;
           timestamp = timestamp.toString(16);
           newJson[timestamp] = json[key][i];
         }
@@ -42,7 +42,6 @@ var helper = (function(){
     }
     return this.jsonParse;
   }
-
   return this
 })
 

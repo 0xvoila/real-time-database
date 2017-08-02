@@ -45,11 +45,9 @@ exports.setData = (event, context, globalCallback) => {
     async.each(records,function(record,callback){
 
         async.series([function(callback){
-            console.log("deleted mongo db");
             database.deleteSubTree(firebaseReference, callback);
           },
           function(callback){
-            console.log("inserting into mongo" + record.abs_path)
             database.insertLeaf(record.abs_path,record.element,record.value, callback);
           },
           function(callback){
@@ -64,7 +62,6 @@ exports.setData = (event, context, globalCallback) => {
               callback(error);
             }
             else{
-              console.log("all good mongo insertion")
               callback(null);
             }
           })
@@ -84,46 +81,13 @@ exports.setData = (event, context, globalCallback) => {
       })
 };
 
-// var setData = function(firebaseReference, json){
-
-//   var records = helper.parseJsonToFindAbsolutePath(firebaseReference,json);
-//   // delete subtree at reference
-//   console.log(records);
-//   async.each(records,function(record,callback){
-
-//         async.series([function(callback){
-
-//             database.deleteSubTree(firebaseReference, callback);
-//           },
-//           function(callback){
-
-//             database.insertLeaf(record.abs_path,record.element,record.value, callback);
-//           },
-//           function(callback){
-
-//               record.event_type = 'value';
-//               kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"set_data"},callback);
-//           }],
-
-//           function(error, result){
-//             if(error) throw error;
-//             console.log("insertion done")
-//             callback();
-//           })
-//        },
-
-//        function(error, result){
-//         if (error) throw error;
-//         console.log("all done")
-//       })
-// }
 
 exports.updateData = (event, context, globalCallback) => {
 
   console.log("event data is ");
   console.log(event.data);
   var firebaseReference = ",messages";
-  var records = helper.parseJsonToFindAbsolutePath(firebaseReference,event.data);
+  var records = new helper().parseJsonToFindAbsolutePath(firebaseReference,event.data);
   // delete subtree at reference
   async.each(records,function(record,callback){
 
@@ -150,43 +114,14 @@ exports.updateData = (event, context, globalCallback) => {
       })
 };
 
-// var updateData = function(firebaseReference, json){
-
-//   var records = helper.parseJsonToFindAbsolutePath(firebaseReference,json);
-//   // delete subtree at reference
-//   async.each(records,function(record,callback){
-
-//         async.series([function(callback){
-
-//             database.updateLeaf(record.abs_path,record.element,record.value, callback);
-//           },
-//           function(callback){
-//               console.log("writing to kinesis")
-//               record.event_type = 'value';
-//               kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"update_data"},callback);
-//           }],
-
-//           function(error, result){
-//             if(error) throw error;
-//             console.log("updation done")
-//             callback();
-//           })
-//        },
-
-//        function(error, result){
-//         if (error) throw error;
-//         console.log("all done")
-//       })
-// }
-
 
 exports.pushData = (event, context, globalCallback) => {
 
   console.log("event data is ");
   console.log(event.data);
   var firebaseReference = ",messages";
-  var newJson = helper.convertArrayToJson(event.data);
-  var records = helper.parseJsonToFindAbsolutePath(firebaseReference,newJson);
+  var helperObj = new helper();
+  var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,event.data);
   // delete subtree at reference
   async.each(records,function(record,callback){
 
@@ -213,36 +148,4 @@ exports.pushData = (event, context, globalCallback) => {
       })
 };
 
-// var pushData = function(firebaseReference,json){
 
-//   var newJson = helper.convertArrayToJson(json);
-//   var records = helper.parseJsonToFindAbsolutePath(firebaseReference,json);
-//   // delete subtree at reference
-//   async.each(records,function(record,callback){
-
-//         async.series([function(callback){
-
-//             database.updateLeaf(record.abs_path,record.element,record.value, callback);
-//           },
-//           function(callback){
-//               console.log("writing to kinesis")
-//               record.event_type = 'child_added';
-//               kinesis.putRecord({Data:JSON.stringify(recordNew),StreamName:'firebase-events',PartitionKey:"child_added"},callback);
-//           }],
-
-//           function(error, result){
-//             if(error) throw error;
-//             console.log("updation done")
-//             callback();
-//           })
-//        },
-
-//        function(error, result){
-//         if (error) throw error;
-//         console.log("all done")
-//       })
-// }
-
-//setData(",messages",json1);
-//updateData(",messages",json2);
-//pushData(",messages",json3);
