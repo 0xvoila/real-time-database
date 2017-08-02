@@ -8,8 +8,8 @@ var kinesis = new aws.Kinesis({region : 'ap-south-1'});
    //your object
   var json1 = {
   "users": {
-    "alanisawesome": {
-      "date_of_birth": "June 23, 1912",
+    "amit": {
+      "my_date_of_birth": "June 23, 1912",
       "full_name": "Alan Turing"
     },
     "gracehop": {
@@ -39,113 +39,96 @@ exports.setData = (event, context, globalCallback) => {
     context.callbackWaitsForEmptyEventLoop = false;
 
     var firebaseReference = ",messages";
-    var records = new helper().parseJsonToFindAbsolutePath(firebaseReference,event.data);
+    var helperObj = helper();
+    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,json1);
 
     // delete subtree at reference
-    async.each(records,function(record,callback){
-
-        async.series([function(callback){
-            database.deleteSubTree(firebaseReference, callback);
-          },
-          function(callback){
-            database.insertLeaf(record.abs_path,record.element,record.value, callback);
-          },
-          function(callback){
-              record.event_type = 'value';
-              kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"set_data"},callback);
-          }],
-
-          function(error, result){
-            if(error) {
-              console.log("error in mongo")
-              throw error;
-              callback(error);
+    async.series([function(callback){
+        database.deleteSubTree(firebaseReference, callback);
+      },
+      function(callback){
+        database.bulkWrite(records, callback);
+      },
+      function(callback){
+        var insertDocumentArray = [];
+        for(var i=0;i<records.length;i++){
+              var firebaseRecord = {abs_path:records[i].abs_path};
+              insertDocumentArray.push(firebaseRecord)
             }
-            else{
-              callback(null);
-            }
-          })
-       },
 
-       function(error, result){
-        if (error) {
-          console.log("error all done")
-          globalCallback(null);
+        record = {"documents":insertDocumentArray, "event_type":"value"}
+        console.log(record)
+        kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"set_data"},callback);
+      }],
+      function(error, result){
+        if(error) {
+          console.log("error in mongo")
+          throw error;
           return
         }
-        else {
-          globalCallback(null);
-          console.log("all done")
-        }
-
       })
 };
 
 
 exports.updateData = (event, context, globalCallback) => {
 
-  console.log("event data is ");
-  console.log(event.data);
-  var firebaseReference = ",messages";
-  var records = new helper().parseJsonToFindAbsolutePath(firebaseReference,event.data);
-  // delete subtree at reference
-  async.each(records,function(record,callback){
+context.callbackWaitsForEmptyEventLoop = false;
 
-        async.series([function(callback){
+    var firebaseReference = ",messages";
+    var helperObj = helper();
+    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,json1);
 
-            database.updateLeaf(record.abs_path,record.element,record.value, callback);
-          },
-          function(callback){
-              console.log("writing to kinesis")
-              record.event_type = 'value';
-              kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"update_data"},callback);
-          }],
+    async.series([function(callback){
 
-          function(error, result){
-            if(error) throw error;
-            console.log("updation done")
-            callback();
-          })
-       },
-
-       function(error, result){
-        if (error) throw error;
-        console.log("all done")
+        database.bulkWrite(records, callback);
+      },
+      function(callback){
+        var insertDocumentArray = [];
+        for(var i=0;i<records.length;i++){
+              var firebaseRecord = {abs_path:records[i].abs_path};
+              insertDocumentArray.push(firebaseRecord)
+            }
+        record = {"documents":insertDocumentArray, "event_type":"value"}
+        console.log(record)
+        kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"update_data"},callback);
+      }],
+      function(error, result){
+        if(error) {
+          console.log("error in mongo")
+          throw error;
+          return
+        }
       })
 };
 
 
 exports.pushData = (event, context, globalCallback) => {
 
-  console.log("event data is ");
-  console.log(event.data);
-  var firebaseReference = ",messages";
-  var helperObj = new helper();
-  var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,event.data);
-  // delete subtree at reference
-  async.each(records,function(record,callback){
+    context.callbackWaitsForEmptyEventLoop = false;
 
-        async.series([function(callback){
+    var firebaseReference = ",messages";
+    var helperObj = helper();
+    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,json1);
 
-            database.updateLeaf(record.abs_path,record.element,record.value, callback);
-          },
-          function(callback){
-              console.log("writing to kinesis")
-              record.event_type = 'child_added';
-              kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"child_added"},callback);
-          }],
+    async.series([function(callback){
 
-          function(error, result){
-            if(error) throw error;
-            console.log("updation done")
-            callback();
-          })
-       },
-
-       function(error, result){
-        if (error) throw error;
-        console.log("all done")
+        database.bulkWrite(records, callback);
+      },
+      function(callback){
+        var insertDocumentArray = [];
+        for(var i=0;i<records.length;i++){
+              var firebaseRecord = {abs_path:records[i].abs_path};
+              insertDocumentArray.push(firebaseRecord)
+            }
+        record = {"documents":insertDocumentArray, "event_type":"child_added"}
+        kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"push_data"},callback);
+      }],
+      function(error, result){
+        if(error) {
+          console.log("error in mongo")
+          throw error;
+          return
+        }
       })
 };
-
 

@@ -31,31 +31,35 @@ var database = (function(){
 
   }
 
-  this.insertLeaf = function(path,element,value,_callback){
+  this.bulkWrite = function(records,_callback){
+
+    var insertDocumentArray = [];
 
     async.waterfall([
-      function(callback){
-        if(this.connection){
-          callback(null,this.connection);
-        }
-        else{
-          connectToDatabase(callback);
-        }
-      },
-      function(db,callback){
-        var firebaseRecord = { abs_path: path, element: element , value: value };
-        db.collection("test").insertOne(firebaseRecord, callback);
-      }
-    ],
-      function(error,result){
-        if (error) {
-          return _callback(error)
-        }
-        return _callback(null,result)
-      }
-    )
+          function(callback){
+            if(this.connection){
+              callback(null,this.connection);
+            }
+            else{
+              connectToDatabase(callback);
+            }
+          },
+          function(db,callback){
+            for(var i=0;i<records.length;i++){
+              var firebaseRecord = {updateOne:{"upsert":true,"filter" : {abs_path:records[i].abs_path}, "update":{abs_path: records[i].abs_path, element: records[i].element , value: records[i].value}}};
+              insertDocumentArray.push(firebaseRecord)
+            }
+            db.collection("test").bulkWrite(insertDocumentArray,callback);
+          }
+        ],
+          function(error,result){
+            if (error) {
+              return _callback(error)
+            }
+            return _callback(null,result)
+          }
+        )
   }
-
 
   this.deleteSubTree = function(reference,_callback){
     console.log( "deleting references" + reference)
@@ -77,33 +81,7 @@ var database = (function(){
         if (error) {
           _callback(error);
         }
-        _callback(null,result);
-      }
-    )
-  }
-
-  this.updateLeaf = function(path,element,value, _callback){
-    async.waterfall([
-      function(callback){
-        if(this.connection){
-          console.log("connection already");
-          callback(null,this.connection);
-        }
-        else{
-          connectToDatabase(callback);
-        }
-      },
-      function(db,callback){
-        var queryObj = {abs_path: path, element:element}
-        var firebaseRecord = { abs_path: path, element: element , value: value };
-        db.collection("test").updateOne(queryObj,firebaseRecord, {upsert:true} ,callback)
-        }
-    ],
-      function(error,result){
-        if (error) {
-          _callback(error);
-        }
-        _callback(null,result);
+        _callback(null);
       }
     )
   }
