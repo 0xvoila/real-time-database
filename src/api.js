@@ -2,7 +2,6 @@ var helper = require('./helper.js');
 var database = require('./database.js');
 var aws = require('aws-sdk');
 var async = require('async');
-
 var kinesis = new aws.Kinesis({region : 'ap-south-1'});
 
 
@@ -37,14 +36,13 @@ var json3 = {
 
 
 exports.setData = (event, context, globalCallback) => {
+    context.callbackWaitsForEmptyEventLoop = false;
 
-    console.log("event data is ");
-    console.log(event.data);
     var firebaseReference = ",messages";
-    var records = helper.parseJsonToFindAbsolutePath(firebaseReference,event.data);
-  // delete subtree at reference
-  console.log(records);
-  async.each(records,function(record,callback){
+    var records = new helper().parseJsonToFindAbsolutePath(firebaseReference,event.data);
+
+    // delete subtree at reference
+    async.each(records,function(record,callback){
 
         async.series([function(callback){
             console.log("deleted mongo db");
@@ -55,21 +53,34 @@ exports.setData = (event, context, globalCallback) => {
             database.insertLeaf(record.abs_path,record.element,record.value, callback);
           },
           function(callback){
-
               record.event_type = 'value';
               kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"set_data"},callback);
           }],
 
           function(error, result){
-            if(error) throw error;
-            console.log("insertion done")
-            callback();
+            if(error) {
+              console.log("error in mongo")
+              throw error;
+              callback(error);
+            }
+            else{
+              console.log("all good mongo insertion")
+              callback(null);
+            }
           })
        },
 
        function(error, result){
-        if (error) throw error;
-        console.log("all done")
+        if (error) {
+          console.log("error all done")
+          globalCallback(null);
+          return
+        }
+        else {
+          globalCallback(null);
+          console.log("all done")
+        }
+
       })
 };
 
