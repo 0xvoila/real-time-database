@@ -15,12 +15,10 @@ var helper = (function(){
         headers:  { "content-type": "application/json"},
         json: true
       }, function(error, response, body){
-      console.log(body);
     });
   },
 
   this.parseJsonToFindAbsolutePath = function(firebaseReference,json){
-    console.log( "json parse is" + this.jsonParse)
 
     for (var key in json){
       // Check if it is nested json

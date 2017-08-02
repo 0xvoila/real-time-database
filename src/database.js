@@ -10,7 +10,6 @@ var database = (function(){
 
   this.connection = null;
   MongoClient.connect(url,function(error,connection){
-    console.log("caching new connection")
     this.connection = connection
   })
 
@@ -23,7 +22,6 @@ var database = (function(){
     else{
         MongoClient.connect(url,function(error,connection){
         this.connection = connection
-        console.log("in db connection, creating new connection")
         _callback(null,this.connection);
         return
       })
@@ -62,7 +60,6 @@ var database = (function(){
   }
 
   this.deleteSubTree = function(reference,_callback){
-    console.log( "deleting references" + reference)
     async.waterfall([
       function(callback){
         if(this.connection){
@@ -91,7 +88,6 @@ var database = (function(){
     async.waterfall([
       function(callback){
          if(this.connection){
-          console.log("connection already");
           callback(null,this.connection);
         }
         else{

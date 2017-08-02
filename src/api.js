@@ -40,7 +40,7 @@ exports.setData = (event, context, globalCallback) => {
 
     var firebaseReference = ",messages";
     var helperObj = helper();
-    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,json1);
+    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,event.data);
 
     // delete subtree at reference
     async.series([function(callback){
@@ -57,14 +57,15 @@ exports.setData = (event, context, globalCallback) => {
             }
 
         record = {"documents":insertDocumentArray, "event_type":"value"}
-        console.log(record)
         kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"set_data"},callback);
       }],
       function(error, result){
         if(error) {
-          console.log("error in mongo")
-          throw error;
+          globalCallback(error);
           return
+        }
+        else {
+          globalCallback(null);
         }
       })
 };
@@ -72,11 +73,11 @@ exports.setData = (event, context, globalCallback) => {
 
 exports.updateData = (event, context, globalCallback) => {
 
-context.callbackWaitsForEmptyEventLoop = false;
+    context.callbackWaitsForEmptyEventLoop = false;
 
     var firebaseReference = ",messages";
     var helperObj = helper();
-    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,json1);
+    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,event.data);
 
     async.series([function(callback){
 
@@ -89,14 +90,15 @@ context.callbackWaitsForEmptyEventLoop = false;
               insertDocumentArray.push(firebaseRecord)
             }
         record = {"documents":insertDocumentArray, "event_type":"value"}
-        console.log(record)
         kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"update_data"},callback);
       }],
       function(error, result){
         if(error) {
-          console.log("error in mongo")
-          throw error;
+          globalCallback(error);
           return
+        }
+        else{
+          globalCallback(null);
         }
       })
 };
@@ -108,7 +110,7 @@ exports.pushData = (event, context, globalCallback) => {
 
     var firebaseReference = ",messages";
     var helperObj = helper();
-    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,json1);
+    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,event.data);
 
     async.series([function(callback){
 
@@ -125,10 +127,11 @@ exports.pushData = (event, context, globalCallback) => {
       }],
       function(error, result){
         if(error) {
-          console.log("error in mongo")
-          throw error;
+          globalCallback(error);
           return
+        }
+        else{
+          globalCallback(null)
         }
       })
 };
-
