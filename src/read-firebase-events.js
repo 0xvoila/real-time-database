@@ -36,13 +36,6 @@ var splitPathListFunc = function(eventArray, _callback){
   })
 }
 
-var createDatabaseSnapShot = function(absPath, _callback){
-
-  console.log(absPath);
-  database.createSnapshot(absPath,null,null, function(error, result){
-    _callback(null,result);
-  });
-}
 
 exports.handler = (event, context, globalCallback) => {
 
