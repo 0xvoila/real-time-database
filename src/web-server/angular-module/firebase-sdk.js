@@ -12,18 +12,18 @@ myApp.service("firebaseService", function($http){
   }
 
   this.set = function(absolutePath,data,callback){
-    data.reference = absolutePath;
-    $http.post('https://hdc1vqp7y0.execute-api.ap-south-1.amazonaws.com/prod/set',  data);
+    var transportObj = {reference:absolutePath, body:data};
+    $http.post('https://hdc1vqp7y0.execute-api.ap-south-1.amazonaws.com/prod/set',  transportObj);
   }
 
   this.update = function(absolutePath, data, callback){
-    data.reference = absolutePath;
-    $http.post('https://hdc1vqp7y0.execute-api.ap-south-1.amazonaws.com/prod/update',  data);
+    var transportObj = {reference:absolutePath, body:data};
+    $http.post('https://hdc1vqp7y0.execute-api.ap-south-1.amazonaws.com/prod/update',  transportObj);
   }
 
   this.push = function(absolutePath, data, callback){
-    data.reference = absolutePath;
-    $http.post('https://hdc1vqp7y0.execute-api.ap-south-1.amazonaws.com/prod/push',  data);
+    var transportObj = {reference:absolutePath, body:data};
+    $http.post('https://hdc1vqp7y0.execute-api.ap-south-1.amazonaws.com/prod/push',  transportObj);
   }
 
 })
