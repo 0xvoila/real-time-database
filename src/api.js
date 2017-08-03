@@ -1,5 +1,5 @@
 var helper = require('./helper.js');
-var database = require('./database.js');
+var database = require('./redis.js');
 var aws = require('aws-sdk');
 var async = require('async');
 var kinesis = new aws.Kinesis({region : 'ap-south-1'});
@@ -35,6 +35,41 @@ var json3 = {
   };
 
 
+var testData = function(){
+
+   var firebaseReference = ",messages";
+    console.log(firebaseReference)
+    var helperObj = helper();
+    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,json1);
+
+    // delete subtree at reference
+    async.series([function(callback){
+        database.deleteSubTree(firebaseReference, callback);
+      },
+      function(callback){
+        database.bulkWrite(records, callback);
+      },
+      function(callback){
+        var insertDocumentArray = [];
+        for(var i=0;i<records.length;i++){
+              var firebaseRecord = {abs_path:records[i].abs_path};
+              insertDocumentArray.push(firebaseRecord)
+            }
+
+        record = {"documents":insertDocumentArray, "event_type":"value"}
+        kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"set_data"},callback);
+      }],
+      function(error, result){
+        if(error) {
+          //globalCallback(error);
+          return
+        }
+        else {
+          //globalCallback(null);
+        }
+      })
+
+}
 exports.setData = (event, context, globalCallback) => {
 
     context.callbackWaitsForEmptyEventLoop = false;
@@ -46,9 +81,11 @@ exports.setData = (event, context, globalCallback) => {
 
     // delete subtree at reference
     async.series([function(callback){
+
         database.deleteSubTree(firebaseReference, callback);
       },
       function(callback){
+
         database.bulkWrite(records, callback);
       },
       function(callback){
@@ -157,3 +194,5 @@ exports.pushData = (event, context, globalCallback) => {
         }
       })
 };
+
+//testData()

@@ -9,9 +9,9 @@ var db = null;
 var database = (function(){
 
   this.connection = null;
-  MongoClient.connect(url,function(error,connection){
-    this.connection = connection
-  })
+  // MongoClient.connect(url,{poolSize: 1000}function(error,connection){
+  //   this.connection = connection
+  // })
 
 
   var connectToDatabase = function(_callback){
@@ -20,7 +20,12 @@ var database = (function(){
       return
     }
     else{
-        MongoClient.connect(url,function(error,connection){
+        MongoClient.connect(url, {poolSize:1000},function(error,connection){
+        if(error){
+          console.log(error)
+          _callback(error)
+          return
+        }
         this.connection = connection
         _callback(null,this.connection);
         return
