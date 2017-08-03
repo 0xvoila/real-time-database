@@ -2,7 +2,7 @@ var myApp = angular.module('myApp',[]);
 
 var myController = myApp.controller('myController',function(firebaseService){
 
-  firebaseService.ref(",messages", function(data){
+  firebaseService.ref(",messages,users", function(data){
     console.log(data);
   })
 

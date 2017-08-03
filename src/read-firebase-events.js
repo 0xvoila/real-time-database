@@ -5,10 +5,10 @@ var database = require('./database.js');
 var async = require('async');
 var request = require('request');
 
-var postUpdates = function(databasesnapshot, _callback){
+var postUpdates = function(firebaseDataChangeLocation, _callback){
    var url = 'http://13.126.96.13/updates/'
             var options = {
-              body: databasesnapshot,
+              body: firebaseDataChangeLocation,
               json: true,
               url: url,
               method:'post'
@@ -63,13 +63,10 @@ exports.handler = (event, context, globalCallback) => {
     })
 
     splitPathListFunc(eventArray, function(error, splitPathList){
-
        async.each(splitPathList, function(absPath, forEachCallback){
-          createDatabaseSnapShot(absPath, function(error, snapshot){
-            postUpdates({abs_path:absPath, snapshot:snapshot}, function(error,response, body){
+            postUpdates({abs_path:absPath}, function(error,response, body){
               globalCallback(null)
             })
-          })
        });
     })
 };
