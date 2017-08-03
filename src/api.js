@@ -105,6 +105,26 @@ exports.updateData = (event, context, globalCallback) => {
       })
 };
 
+exports.getData = (event, context, globalCallback) => {
+
+    context.callbackWaitsForEmptyEventLoop = false;
+
+    var firebaseReference = event.data.reference;
+    var queryFilter = event.data.filter || {};
+    var limit = event.data.limit || {}
+
+    database.createSnapshot(firebaseReference, queryFilter, limit, function(error,result){
+
+      if(error){
+          globalCallback(error)
+          return
+      }
+
+      globalCallback(null,result)
+      return result;
+    })
+
+};
 
 exports.pushData = (event, context, globalCallback) => {
 
