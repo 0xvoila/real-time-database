@@ -96,7 +96,7 @@ var database = (function(){
       },
       function(db,callback){
         var firebaseRecord = { abs_path: new RegExp("^" + path)};
-        db.collection("test").find(firebaseRecord).snapshot.toArray(callback);
+        db.collection("test").find(firebaseRecord).snapshot().toArray(callback);
       }
     ],
       function(error,result){
