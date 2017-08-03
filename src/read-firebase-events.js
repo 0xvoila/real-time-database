@@ -20,7 +20,6 @@ var postUpdates = function(firebaseDataChangeLocation, _callback){
 
 var splitPathListFunc = function(eventArray, _callback){
   var splitPathList = [];
-  console.log(eventArray)
   async.each(eventArray, function(eve, eventCallback){
      var absPathArray = eve.abs_path.split(",");
       var eventType = eve.event_type;
@@ -38,15 +37,15 @@ var splitPathListFunc = function(eventArray, _callback){
 
 
 exports.handler = (event, context, globalCallback) => {
-
+    context.callbackWaitsForEmptyEventLoop = false;
     var eventArray = [];
     async.each(event.Records,function(record, callback){
+        console.log(record)
         const payload = new Buffer(record.kinesis.data, 'base64');
         var jsonPayload = JSON.parse(payload);
         var absPathArray = jsonPayload.documents;
         var event_type = jsonPayload.event_type;
         for(var i=0;i<absPathArray.length;i++){
-          console.log(absPathArray)
           eventArray.push({abs_path:absPathArray[i].abs_path, event_type:event_type})
         }
 
@@ -54,7 +53,6 @@ exports.handler = (event, context, globalCallback) => {
       },function(error, result){
             if(error) throw error;
     })
-
     splitPathListFunc(eventArray, function(error, splitPathList){
        async.each(splitPathList, function(absPath, forEachCallback){
             postUpdates({abs_path:absPath}, function(error,response, body){
