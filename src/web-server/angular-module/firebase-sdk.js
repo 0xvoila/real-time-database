@@ -6,7 +6,8 @@ myApp.service("firebaseService", function($http){
     var socket = io('http://13.126.96.13:80');
     socket.emit('join_room', { abs_path: absolutePath });
     socket.on("new_data", function(data){
-      $http.post('https://hdc1vqp7y0.execute-api.ap-south-1.amazonaws.com/prod/get',  data).then(function(data){
+      var transportObj = {"reference":data}
+      $http.post('https://hdc1vqp7y0.execute-api.ap-south-1.amazonaws.com/prod/get',  transportObj).then(function(data){
         callback(null,data);
       }, function(error){
         callback(error)
