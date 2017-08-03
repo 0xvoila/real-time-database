@@ -20,6 +20,7 @@ var postUpdates = function(databasesnapshot, _callback){
 
 var splitPathListFunc = function(eventArray, _callback){
   var splitPathList = [];
+  console.log(eventArray)
   async.each(eventArray, function(eve, eventCallback){
      var absPathArray = eve.abs_path.split(",");
       var eventType = eve.event_type;
@@ -49,13 +50,16 @@ exports.handler = (event, context, globalCallback) => {
     async.each(event.Records,function(record, callback){
         const payload = new Buffer(record.kinesis.data, 'base64');
         var jsonPayload = JSON.parse(payload);
-        var abs_path = jsonPayload.abs_path;
+        var absPathArray = jsonPayload.documents;
         var event_type = jsonPayload.event_type;
-        eventArray.push({abs_path:abs_path, event_type:event_type})
-        callback(null);
+        for(var i=0;i<absPathArray.length;i++){
+          console.log(absPathArray)
+          eventArray.push({abs_path:absPathArray[i].abs_path, event_type:event_type})
+        }
 
-    }, function(error, result){
-      if(error) throw error;
+        callback(null);
+      },function(error, result){
+            if(error) throw error;
     })
 
     splitPathListFunc(eventArray, function(error, splitPathList){

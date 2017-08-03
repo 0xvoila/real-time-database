@@ -12,7 +12,6 @@ server.listen(80);
 
 // Register the index route of your app that returns the HTML file
 app.get('/', function (req, res) {
-    console.log("Homepage");
     res.sendFile(__dirname + '/index.html');
 });
 
@@ -39,8 +38,6 @@ app.get("/room", function(req, res, next) {
 io.on('connection', function (socket) {
     socket.on('join_room', function (data) {
         socket.join(data.abs_path);
-        console.log("new connection" + data.abs_path);
-
         // now store room in database so that it can access by other
     });
 });
