@@ -36,11 +36,11 @@ var json3 = {
 
 
 exports.setData = (event, context, globalCallback) => {
-    context.callbackWaitsForEmptyEventLoop = false;
 
-    var firebaseReference = ",messages";
+    context.callbackWaitsForEmptyEventLoop = false;
+    var firebaseReference = event.data.reference;
     var helperObj = helper();
-    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,event.data);
+    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,event.data.body);
 
     // delete subtree at reference
     async.series([function(callback){
@@ -75,9 +75,9 @@ exports.updateData = (event, context, globalCallback) => {
 
     context.callbackWaitsForEmptyEventLoop = false;
 
-    var firebaseReference = ",messages";
+    var firebaseReference = event.data.reference;
     var helperObj = helper();
-    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,event.data);
+    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,event.data.body);
 
     async.series([function(callback){
 
@@ -108,9 +108,9 @@ exports.pushData = (event, context, globalCallback) => {
 
     context.callbackWaitsForEmptyEventLoop = false;
 
-    var firebaseReference = ",messages";
+    var firebaseReference = event.data.reference;
     var helperObj = helper();
-    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,event.data);
+    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,event.data.body);
 
     async.series([function(callback){
 

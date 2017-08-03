@@ -71,7 +71,7 @@ var database = (function(){
       },
       function(db,callback){
         var firebaseRecord = { abs_path: new RegExp( '^' + reference)};
-        db.collection("test").remove(firebaseRecord, callback);
+        db.collection("test").deleteMany(firebaseRecord, callback);
       }
     ],
       function(error,result){
