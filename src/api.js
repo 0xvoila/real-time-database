@@ -1,9 +1,20 @@
+'use strict'
+
 var helper = require('./helper.js');
 var database = require('./redis.js');
 var aws = require('aws-sdk');
 var async = require('async');
 var kinesis = new aws.Kinesis({region : 'ap-south-1'});
+var RedisClient = require('redis')
+var client = null;
 
+var connectToRedis = function(callback){
+  client = RedisClient.createClient(6379,'13.126.96.13')
+  client.on("connect", function(){
+    console.log("creating connection again")
+    callback(null,client);
+  })
+}
 
    //your object
   var json1 = {
@@ -38,16 +49,15 @@ var json3 = {
 var testData = function(){
 
    var firebaseReference = ",messages";
-    console.log(firebaseReference)
     var helperObj = helper();
     var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,json1);
 
     // delete subtree at reference
     async.series([function(callback){
-        database.deleteSubTree(firebaseReference, callback);
+        database.deleteSubTree(connection,firebaseReference, callback);
       },
       function(callback){
-        database.bulkWrite(records, callback);
+        database.bulkWrite(connection,records, callback);
       },
       function(callback){
         var insertDocumentArray = [];
@@ -74,19 +84,17 @@ exports.setData = (event, context, globalCallback) => {
 
     context.callbackWaitsForEmptyEventLoop = false;
     var firebaseReference = event.data.reference;
-    console.log(firebaseReference)
-    console.log(event.data.body)
     var helperObj = helper();
     var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,event.data.body);
 
     // delete subtree at reference
     async.series([function(callback){
 
-        database.deleteSubTree(firebaseReference, callback);
+        database.deleteSubTree(client,firebaseReference, callback);
       },
       function(callback){
 
-        database.bulkWrite(records, callback);
+        database.bulkWrite(client,records, callback);
       },
       function(callback){
         var insertDocumentArray = [];
@@ -120,7 +128,7 @@ exports.updateData = (event, context, globalCallback) => {
 
     async.series([function(callback){
 
-        database.bulkWrite(records, callback);
+        database.bulkWrite(client,records, callback);
       },
       function(callback){
         var insertDocumentArray = [];
@@ -150,38 +158,54 @@ exports.getData = (event, context, globalCallback) => {
     var queryFilter = event.data.filter || {};
     var limit = event.data.limit || {}
 
-    database.createSnapshot(firebaseReference, queryFilter, limit, function(error,result){
+    async.waterfall([function(callback){
+      if(client){
+          console.log("connection found")
+          callback(null,client)
+        }
+        else{
+          connectToRedis(callback)
+        }
+      }, function(result,callback){
+            database.createSnapshot(client,firebaseReference, queryFilter, limit, callback)
 
-      if(error){
+    }], function(error, result){
+        if(error){
           globalCallback(error)
-          return
-      }
-
-      globalCallback(null,result)
-      return result;
+        }
+        else{
+          globalCallback(null,result)
+        }
     })
-
 };
 
 exports.pushData = (event, context, globalCallback) => {
 
     context.callbackWaitsForEmptyEventLoop = false;
-
     var firebaseReference = event.data.reference;
     var helperObj = helper();
     var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,event.data.body);
+    console.log(records);
+    async.waterfall([function(callback){
+        if(client){
+          console.log("connection found")
+          callback(null,client)
+        }
+        else{
+          connectToRedis(callback)
+        }
 
-    async.series([function(callback){
+      },function(abc,callback){
 
-        database.bulkWrite(records, callback);
+        database.bulkWrite(client,records, callback);
       },
-      function(callback){
+      function(result, callback){
         var insertDocumentArray = [];
         for(var i=0;i<records.length;i++){
               var firebaseRecord = {abs_path:records[i].abs_path};
               insertDocumentArray.push(firebaseRecord)
             }
-        record = {"documents":insertDocumentArray, "event_type":"child_added"}
+        var record = {"documents":insertDocumentArray, "event_type":"child_added"}
         kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"push_data"},callback);
       }],
       function(error, result){
@@ -195,4 +219,3 @@ exports.pushData = (event, context, globalCallback) => {
       })
 };
 
-//testData()
