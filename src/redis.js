@@ -60,21 +60,27 @@ var database = (function(){
 
   this.createSnapshot = function(connection,path,whereQuery, limitLast, _callback){
 
+    var helperObj = helper();
+
     async.waterfall([
       function(callback){
         async.waterfall([function(callback){
           firebaseRecord = path + "*"
           connection.keys(firebaseRecord, callback)
         }, function(rows, callback){
-            var transportResult = []
+            var transportResult = {}
             async.each(rows, function(row,callback){
               connection.get(row, function(error, resp){
-                transportResult.push(resp)
+                transportResult[row] = resp
                 callback(null)
               })
             }, function(error, result){
               callback(null,transportResult)
             })
+        },function(transportResult, callback){
+          var result = helperObj.jsonify(transportResult)
+          console.log("json result" + result)
+          callback(null,result)
         }], function(error, result){
               callback(null,result)
         })

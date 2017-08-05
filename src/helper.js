@@ -21,6 +21,27 @@ var helper = (function(){
     });
   },
 
+  this.jsonify = function(xPaths){
+    var tmp_obj = {};
+    var obj = tmp_obj;
+    for(key in xPaths) {
+      var path = key.split("/");
+      path = path.slice(1, path.length);
+      for(var x = 0; x < path.length; x++){
+        //check if node already exist
+        if(tmp_obj[path[x]] == undefined) tmp_obj[path[x]] = {};
+        //handle lead node
+          if(x == path.length-1)
+            tmp_obj[path[x]] = xPaths[key];
+          else
+            tmp_obj = tmp_obj[path[x]];
+      }
+      tmp_obj = obj;
+    }
+
+    return obj
+  }
+
   this.parseJsonToFindAbsolutePath = function(firebaseReference,json){
 
     for (var key in json){
