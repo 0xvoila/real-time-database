@@ -8,22 +8,27 @@ var myController = myApp.controller('myController',function(firebaseService){
       return
     }
     else{
-      var mydata = parseInt(data[0]) + 1;
-      console.log(mydata);
-      firebaseService.push("/messages",{"counter":mydata});
+      console.log(data);
     }
 
   })
 
 
   for( var i=0; i<100;i++){
-     console.log(i);
-     firebaseService.push("/messages",{"counter":"100"});
+
+     json = {
+          "users": {
+            "amit": {
+              "my_date_of_birth": "June 23, 1912",
+              "full_name": "Alan Turing"
+            },
+            "gracehop": {
+              "date_of_birth": "December 9, 1906",
+              "full_name": "Grace Hopper",
+            }
+          }
+        }
+
+     firebaseService.push("/messages",json);
    }
-  //firebaseService.set(",messages",{"users":"amit"});
- //setInterval(function(){
-  //firebaseService.push(",messages",{"counter":"100"});
- //},50)
-
-
 });
