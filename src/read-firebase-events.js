@@ -4,6 +4,7 @@ var helper = require('./helper.js');
 var database = require('./database.js');
 var async = require('async');
 var request = require('request');
+var md5 = require('md5')
 
 var postUpdates = function(firebaseDataChangeLocation, _callback){
    var url = 'http://13.126.96.13/updates/'
@@ -54,7 +55,8 @@ exports.handler = (event, context, globalCallback) => {
     })
     splitPathListFunc(eventArray, function(error, splitPathList){
        async.each(splitPathList, function(list, forEachCallback){
-            postUpdates({abs_path:list.abs_path,event_type:list.event_type}, function(error,response, body){
+            var connection = md5(list.abs_path + list.event_type)
+            postUpdates({data:list,connection:connection}, function(error,response, body){
               globalCallback(null)
             })
        });

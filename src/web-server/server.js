@@ -1,6 +1,7 @@
 var bodyParser = require('body-parser')
 var http = require('http');
 var express = require('express');
+var md5 = require('md5')
 var app = express();
 
 var server = http.createServer(app);
@@ -23,9 +24,9 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 app.post("/updates", function(req, res) {
-    var data = {"abs_path" : req.body.abs_path,"event_type":req.body.event_type}
+    var data = {"abs_path" : req.body.data.abs_path,"event_type":req.body.data.event_type}
     console.log(data)
-    io.to(req.body.abs_path).emit("new_data", data);
+    io.to(req.body.connection).emit("new_data", data);
     res.send({});
 });
 
@@ -38,7 +39,8 @@ app.get("/room", function(req, res, next) {
 // Handle connection
 io.on('connection', function (socket) {
     socket.on('join_room', function (data) {
-        socket.join(data.abs_path);
+        var connection = md5(data.abs_path + data.event_type)
+        socket.join(connection);
         // now store room in database so that it can access by other
     });
 });

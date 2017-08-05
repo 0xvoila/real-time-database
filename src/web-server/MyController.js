@@ -2,7 +2,7 @@ var myApp = angular.module('myApp',[]);
 
 var myController = myApp.controller('myController',function(firebaseService){
 
-  firebaseService.ref("/messages", function(error, data){
+  firebaseService.ref("/messages", 'child_added', function(error, data){
     if(error){
       throw error;
       return
