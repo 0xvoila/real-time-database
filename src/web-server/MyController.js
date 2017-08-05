@@ -1,8 +1,8 @@
 var myApp = angular.module('myApp',[]);
 
-var myController = myApp.controller('myController',function(firebaseService){
+var myController = myApp.controller('myController',function($scope,firebaseService){
 
-  $scope.messages = null;
+  $scope.messages = [];
 
   firebaseService.ref("/messages", 'child_added', function(error, data){
     if(error){
