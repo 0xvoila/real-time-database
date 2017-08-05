@@ -21,11 +21,11 @@ var postUpdates = function(firebaseDataChangeLocation, _callback){
 var splitPathListFunc = function(eventArray, _callback){
   var splitPathList = [];
   async.each(eventArray, function(eve, eventCallback){
-     var absPathArray = eve.abs_path.split(",");
+     var absPathArray = eve.abs_path.split("/");
       var eventType = eve.event_type;
       var absPathArrayLen = absPathArray.length;
       for(var i=0;i<absPathArrayLen;i++){
-        splitPathList.push(absPathArray.join(","));
+        splitPathList.push({abs_path:absPathArray.join("/"),event_type:eventType});
         absPathArray.pop();
       }
       eventCallback();
@@ -48,14 +48,13 @@ exports.handler = (event, context, globalCallback) => {
         for(var i=0;i<absPathArray.length;i++){
           eventArray.push({abs_path:absPathArray[i].abs_path, event_type:event_type})
         }
-
         callback(null);
       },function(error, result){
             if(error) throw error;
     })
     splitPathListFunc(eventArray, function(error, splitPathList){
-       async.each(splitPathList, function(absPath, forEachCallback){
-            postUpdates({abs_path:absPath}, function(error,response, body){
+       async.each(splitPathList, function(list, forEachCallback){
+            postUpdates({abs_path:list.abs_path,event_type:list.event_type}, function(error,response, body){
               globalCallback(null)
             })
        });
