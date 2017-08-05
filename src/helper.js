@@ -1,10 +1,13 @@
 var generateId = require('time-uuid');
 var request = require('request');
+var ObjectID = require('mongodb').ObjectID;
 
 
 var helper = (function(){
 
   this.jsonParse = [];
+  this.ObjectId = new ObjectID();
+  this.ObjectId = this.ObjectId.toHexString()
 
   this.postUpdates = function(path,data){
 
@@ -21,26 +24,29 @@ var helper = (function(){
   this.parseJsonToFindAbsolutePath = function(firebaseReference,json){
 
     for (var key in json){
-      // Check if it is nested json
-      if(json[key] != null  && Array.isArray(json[key])){
-        var newJson = {}
-        for( var i = 0; i < json[key].length; i ++){
-          var timestamp = new Date().getTime();
-          timestamp = timestamp + i;
-          timestamp = timestamp.toString(16);
-          newJson[timestamp] = json[key][i];
-        }
-        this.parseJsonToFindAbsolutePath(firebaseReference + "," + key,newJson);
-      }
-      else if (json[key] != null && typeof(json[key])=="object"){
-       this.parseJsonToFindAbsolutePath(firebaseReference + "," + key,json[key]);
+      if (json[key] != null && typeof(json[key])=="object"){
+       this.parseJsonToFindAbsolutePath(firebaseReference + "/" + key,json[key]);
       }
       else {
-        this.jsonParse.push({abs_path:firebaseReference + "," + key, element:key, value:json[key]});
+        this.jsonParse.push({abs_path:firebaseReference + "/" + key, element:key, value:json[key]});
       }
     }
     return this.jsonParse;
   }
+
+  this.parseJsonArrayToFindAbsolutePath = function(firebaseReference,json){
+
+    for (var key in json){
+      if (json[key] != null && typeof(json[key])=="object"){
+       this.parseJsonToFindAbsolutePath(firebaseReference + "/" + this.ObjectId + "/" + key,json[key]);
+      }
+      else {
+        this.jsonParse.push({abs_path:firebaseReference + "/" + this.ObjectId + "/" + key, element:key, value:json[key]});
+      }
+    }
+    return this.jsonParse;
+  }
+
   return this
 })
 

@@ -184,7 +184,7 @@ exports.pushData = (event, context, globalCallback) => {
     context.callbackWaitsForEmptyEventLoop = false;
     var firebaseReference = event.data.reference;
     var helperObj = helper();
-    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,event.data.body);
+    var records = helperObj.parseJsonArrayToFindAbsolutePath(firebaseReference,event.data.body);
     console.log(records);
     async.waterfall([function(callback){
         if(client){
