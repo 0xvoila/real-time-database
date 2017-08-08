@@ -5,6 +5,7 @@ var database = require('./database.js');
 var aws = require('aws-sdk');
 var {Tree,Node} = require('./tree.js')
 var async = require('async');
+var circularJSON = require('circular-json');
 var kinesis = new aws.Kinesis({region : 'ap-south-1'});
 var RedisClient = require('redis')
 var client = null;
@@ -35,7 +36,8 @@ var url = 'mongodb://root:2June1989!@voila-cluster-shard-00-00-45vfv.mongodb.net
 
 var testData = function(json){
 
-   var firebaseReference = ",messages";
+    var firebaseReference = "/messages";
+    var json = {"messages":json}
     var myTree = new Tree()
     var rootNode = new Node()
     rootNode.parent = null;
@@ -54,14 +56,12 @@ var testData = function(json){
         }
       },function(callback){
         console.log("I am here")
-        //tree.deleteSubTree(connection,firebaseReference, callback);
-        callback();
+        database.removeSubTree(client,firebaseReference, callback);
       },
       function(callback){
         myTree.depthFirstProcessing(client,rootNode, callback);
       }, function(callback){
-          myTree.breadthFirst(rootNode)
-          callback()
+        myTree.breadthFirstEventTrigger(rootNode,callback)
       }],
       function(error, result){
         if(error) {
@@ -69,19 +69,21 @@ var testData = function(json){
           return
         }
         else {
-          //globalCallback(null);
+        //  globalCallback(null);
         }
       })
-
 }
 exports.setData = (event, context, globalCallback) => {
 
     context.callbackWaitsForEmptyEventLoop = false;
-    var firebaseReference = event.data.reference;
+    var firebaseReference = "/messages";
+    var json = {"messages":event.data}
     var myTree = new Tree()
     var rootNode = new Node()
     rootNode.parent = null;
-    myTree.toTree(rootNode,firebaseReference.event.data,[])
+
+
+    myTree.toTree(rootNode,json,[])
 
     // delete subtree at reference
     async.series([function(callback){
@@ -90,19 +92,17 @@ exports.setData = (event, context, globalCallback) => {
           callback(null,client)
         }
         else{
-          connectToRedis(callback)
+          connectToDatabase(callback)
         }
       },function(callback){
-
-        database.deleteSubTree(client,firebaseReference, callback);
+        console.log("I am here")
+        database.removeSubTree(client,firebaseReference, callback);
       },
       function(callback){
-
-        database.bulkWrite(client,records, callback);
-      },
-      function(callback){
-        record = {"location":firebaseReference, "event_type":"value"}
-        kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"set_data"},callback);
+        myTree.depthFirstProcessing(client,rootNode, callback);
+      }, function(callback){
+        console.log("calling breadthFirstEventTrigger")
+        myTree.breadthFirstEventTrigger(rootNode,callback)
       }],
       function(error, result){
         if(error) {
@@ -165,7 +165,7 @@ exports.getData = (event, context, globalCallback) => {
           callback(null,client)
         }
         else{
-          connectToRedis(callback)
+          connectToDatabase(callback)
         }
       }, function(result,callback){
             database.createSnapshot(client,firebaseReference, queryFilter, limit, callback)

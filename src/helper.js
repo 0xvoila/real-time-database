@@ -1,6 +1,7 @@
 var generateId = require('time-uuid');
 var request = require('request');
 var ObjectID = require('mongodb').ObjectID;
+var request = require('request');
 
 
 var helper = (function(){
@@ -14,17 +15,19 @@ var helper = (function(){
     return ObjectId
   }
 
-  this.postUpdates = function(path,data){
-
-    //Custom Header pass
-    request.post({
-        url: 'http://13.126.96.13/updates',
-        body: data,
-        headers:  { "content-type": "application/json"},
-        json: true
-      }, function(error, response, body){
-    });
-  },
+  this.postUpdates = function(data, _callback){
+   var url = 'http://13.126.96.13/updates/'
+            var options = {
+              body: data,
+              json: true,
+              url: url,
+              method:'post'
+            }
+            request(options,function(error,response,body){
+              console.log("uri called" + error + response.body)
+              _callback(error,response,body);
+            });
+}
 
   this.jsonify = function(xPaths){
     var tmp_obj = {};

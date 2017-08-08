@@ -23,11 +23,18 @@ var database = (function(){
     })
   }
 
+  this.removeSubTree = function(connection,firebaseReference, _callback){
+
+    var firebaseRecord = { abs_path: new RegExp( '^' + firebaseReference)};
+    connection.collection("test").deleteMany(firebaseRecord, _callback);
+  }
+
   this.addNode = function(connection,document,_callback){
     connection.collection("test").insertOne(document, _callback)
   }
 
   this.updateNode = function(connection,query,document,_callback){
+    console.log(query , document)
     connection.collection("test").update(query, document, _callback)
   }
 
@@ -75,10 +82,14 @@ var database = (function(){
 
   this.createSnapshot = function(connection,path,whereQuery, limitLast, _callback){
 
+    var helperObj = helper();
     async.waterfall([
       function(callback){
-        var firebaseRecord = { abs_path: new RegExp("^" + path)};
-        connection.collection("test").find(firebaseRecord).snapshot().toArray(callback);
+        var firebaseRecord = { absolute_path: new RegExp("^" + path)};
+        connection.collection("test").find(firebaseRecord,{"absolute_path":1,"_id":0,"value":1}).snapshot().toArray(function(error, result){
+          result = helperObj.jsonify(result)
+          callback(null,result)
+        });
       }
     ],
       function(error,result){

@@ -1,6 +1,10 @@
 var ObjectID = require('mongodb').ObjectID;
 var async = require('async');
 var database = require("./database.js")
+var helper = require('./helper')
+var md5 = require('md5')
+
+var helperObj = new helper()
 
 var getObjectId = function(){
     var ObjectId = new ObjectID();
@@ -22,6 +26,10 @@ var Tree = function(){
   this.rootNode = new Node()
   this.rootNode.parent = null;
   var _this = this;
+
+  this.toJson = function(xPaths){
+
+  }
 
   this.toTree = function(node, json, pathKeys){
     // console.log(node)
@@ -118,7 +126,7 @@ var Tree = function(){
         console.log("XXXX")
         // it means it exists then do upate and trigger events
         async.series([function(callback){
-          database.updateNode(dbConnection,{absolute_path:node.data.key, value:node.data.value}, callback)
+          database.updateNode(dbConnection,{absolute_path:node.data.key},{absolute_path:node.data.key, value:node.data.value}, callback)
 
         }, function(callback){
            // Now update parents with firebase events
@@ -168,6 +176,7 @@ var Tree = function(){
     })
   }
 
+
   this.depthFirstProcessing = function(dbConnection, node, _callback){
 
     async.series([function(callback){
@@ -200,24 +209,41 @@ var Tree = function(){
     return
   }
 
-  this.breadthFirst = function(node){
+  this.breadthFirstEventTrigger = function(node, _callback){
 
-    for(var i =0; i< node.children.length;i++){
-        console.log(node.children[i].events)
-    }
-    for(var i =0; i< node.children.length;i++){
-        this.breadthFirst(node.children[i])
-    }
-    return
-
+    async.each(node.children, function(child,callback){
+      async.each(child.events, function(xevent,callback){
+        console.log(child.data.key + xevent)
+        var connection = md5(child.data.key + xevent)
+        console.log(child.data.key + xevent)
+        var data = {absolute_path:child.data.key , connection:connection}
+        helperObj.postUpdates(data,callback)
+      },function(error, result){
+        if(error) throw error
+        else {
+          callback()
+        }
+      })
+    }, function(error, result){
+      if(error){
+        throw error
+        _callback(error)
+      }
+      else{
+        async.each(node.children, function(child,callback){
+            _this.breadthFirstEventTrigger(child, callback)
+        }, function(error, result){
+            if(error){
+              _callback(error)
+            }
+            else{
+              _callback(null,result)
+            }
+        })
+      }
+    })
   }
 }
-
-
-// var myTree = new Tree()
-// var rootNode = new Node()
-// rootNode.parent = null;
-// myTree.toTree(rootNode,{"name":"amit"},[])
 
 module.exports = {
   Node : Node,
