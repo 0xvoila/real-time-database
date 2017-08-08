@@ -15,7 +15,6 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
 
   })
 
-
   for( var i=0; i<10;i++){
 
      json = {
