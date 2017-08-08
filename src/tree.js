@@ -16,17 +16,21 @@ var Node = function(){
 
 var Tree = function(){
 
-  this.toTree = function(node, json){
+  this.rootNode = new Node()
+  this.rootNode.parent = null;
+
+  this.toTree = function(node, json, rootKey){
     for(var key in json){
 
       var newNode = new Node()
       newNode.parent = node;
+
       if(typeof(json[key]) == "object"){
-        newNode.data.key = key
+        newNode.data.key = rootKey.join("") + "/" +  key
         newNode.data.value = null
       }
       else {
-        newNode.data.key = key;
+        newNode.data.key = rootKey.join("") +  "/" + key ;
         newNode.data.value = json[key]
       }
 
@@ -34,9 +38,13 @@ var Tree = function(){
       node = newNode;
 
       if(typeof(json[key]) == "object"){
-        this.toTree(node,json[key])
+        rootKey.push( "/" + key)
+        this.toTree(node,json[key],rootKey)
       }
     }
+
+    rootKey.pop()
+
   }
 
   this.addChildNode = function(parentNode, childNode){
@@ -84,12 +92,12 @@ var Tree = function(){
   }
 }
 
-var json2 = {"school":{"class":{"name":"amit","addresss":{"address1":"A-203", "address2":"G-14"}}}, "principal":"amit"}
+var json2 = { "happy" : true, "school":{"class":{"name":"amit","addresss":{"address1":"A-203", "address2":"G-14"}}}, "principal":"amit"}
 
 var myTree = new Tree()
 var rootNode = new Node()
 rootNode.parent = null;
-myTree.toTree(rootNode,json2)
+myTree.toTree(rootNode,json2, [])
 myTree.depthFirst(rootNode)
 
 
