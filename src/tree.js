@@ -79,7 +79,7 @@ var Tree = function(){
     var parentNode = node.parent
     if(eventJson.parent && parentNode){
       for(var i=0;i<eventJson.parent.length;i++){
-        if(eventJson.parent[i] == 'child_added'){
+        if(eventJson.parent[i] == 'child_added' || eventJson.parent[i] == "child_changed" || eventJson.parent[i] == "child_removed"){
           var event = eventJson.parent[i]
           parentNode.events[event] = node.data.key
         }
@@ -139,7 +139,7 @@ var Tree = function(){
 
         }, function(callback){
            // Now update parents with firebase events
-          var events = {"self":["value"], "parent":["value","child_updated"], "grandParents" :["value", "child_updated"]}
+          var events = {"self":["value"], "parent":["value","child_changed"], "grandParents" :["value", "child_changed"]}
           _this.setEvents(node,events,callback)
         }], function(error, result){
               if(error){

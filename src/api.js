@@ -33,6 +33,18 @@ var url = 'mongodb://root:2June1989!@voila-cluster-shard-00-00-45vfv.mongodb.net
 
   }
 
+var x = function(){
+  var helperObj = helper();
+    var objectId = helperObj.getObjectId()
+    console.log(objectId)
+    var firebaseReference = "/messages";
+  var json = {"name":"amit"}
+  var y = {}
+  y[objectId] = json
+  var v = {}
+  v["/messages"] = y
+  console.log(v)
+}
 
 var testData = function(json){
 
@@ -61,6 +73,7 @@ var testData = function(json){
       function(callback){
         myTree.depthFirstProcessing(client,rootNode, callback);
       }, function(callback){
+        console.log("calling breadthFirstEventTrigger")
         myTree.breadthFirstEventTrigger(rootNode,callback)
       }],
       function(error, result){
@@ -69,7 +82,7 @@ var testData = function(json){
           return
         }
         else {
-        //  globalCallback(null);
+          //globalCallback(null);
         }
       })
 }
@@ -77,7 +90,8 @@ exports.setData = (event, context, globalCallback) => {
 
     context.callbackWaitsForEmptyEventLoop = false;
     var firebaseReference = "/messages";
-    var json = {"messages":event.data}
+    var json = {"messages":event.data.body}
+    console.log(json)
     var myTree = new Tree()
     var rootNode = new Node()
     rootNode.parent = null;
@@ -119,33 +133,36 @@ exports.setData = (event, context, globalCallback) => {
 exports.updateData = (event, context, globalCallback) => {
 
     context.callbackWaitsForEmptyEventLoop = false;
+    var firebaseReference = "/messages";
+    var json = {"messages":event.data.body}
+    var myTree = new Tree()
+    var rootNode = new Node()
+    rootNode.parent = null;
 
-    var firebaseReference = event.data.reference;
-    var helperObj = helper();
-    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,event.data.body);
+    myTree.toTree(rootNode,json,[])
 
+    // delete subtree at reference
     async.series([function(callback){
       if(client){
           console.log("connection found")
           callback(null,client)
         }
         else{
-          connectToRedis(callback)
+          connectToDatabase(callback)
         }
-      },function(callback){
-
-        database.bulkWrite(client,records, callback);
       },
       function(callback){
-        record = {"location":firebaseReference, "event_type":"value"}
-        kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"update_data"},callback);
+        myTree.depthFirstProcessing(client,rootNode, callback);
+      }, function(callback){
+        console.log("calling breadthFirstEventTrigger")
+        myTree.breadthFirstEventTrigger(rootNode,callback)
       }],
       function(error, result){
         if(error) {
           globalCallback(error);
           return
         }
-        else{
+        else {
           globalCallback(null);
         }
       })
@@ -183,37 +200,50 @@ exports.getData = (event, context, globalCallback) => {
 exports.pushData = (event, context, globalCallback) => {
 
     context.callbackWaitsForEmptyEventLoop = false;
-    var firebaseReference = event.data.reference;
     var helperObj = helper();
     var objectId = helperObj.getObjectId()
-    var records = helperObj.parseJsonArrayToFindAbsolutePath(firebaseReference,objectId, event.data.body);
-    console.log(records);
-    async.waterfall([function(callback){
-        if(client){
+    var firebaseReference = "/messages";
+    var json = event.data.body
+    var y = {}
+    y[objectId] = json
+    var v = {}
+    v["messages"] = y
+    var myTree = new Tree()
+    var rootNode = new Node()
+    rootNode.parent = null;
+
+    myTree.toTree(rootNode,v,[])
+
+    // delete subtree at reference
+    async.series([function(callback){
+      if(client){
           console.log("connection found")
           callback(null,client)
         }
         else{
-          connectToRedis(callback)
+          connectToDatabase(callback)
         }
-
-      },function(abc,callback){
-
-        database.bulkWrite(client,records, callback);
       },
-      function(result, callback){
-        var record = {"location":firebaseReference + "/" + objectId, "event_type":"child_added"}
-        kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"push_data"},callback);
+      function(callback){
+        myTree.depthFirstProcessing(client,rootNode, callback);
+      }, function(callback){
+        console.log("calling breadthFirstEventTrigger")
+        myTree.breadthFirstEventTrigger(rootNode,callback)
       }],
       function(error, result){
         if(error) {
           globalCallback(error);
           return
         }
-        else{
-          globalCallback(null)
+        else {
+          globalCallback(null);
         }
       })
 };
 
-//testData({"school":{"class":"4th","address":{"addressline1":"A-203", "addressline2":"G14"}}})
+var json = {
+          "chat_room_id" : "a",
+          "body" : "b"
+        }
+
+testData(json)

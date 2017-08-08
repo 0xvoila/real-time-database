@@ -24,7 +24,6 @@ var helper = (function(){
               method:'post'
             }
             request(options,function(error,response,body){
-              console.log("uri called" + error + response.body)
               _callback(error,response,body);
             });
 }
