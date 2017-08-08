@@ -86,7 +86,9 @@ var database = (function(){
     async.waterfall([
       function(callback){
         var firebaseRecord = { absolute_path: new RegExp("^" + path)};
+        console.log(firebaseRecord)
         connection.collection("test").find(firebaseRecord,{"absolute_path":1,"_id":0,"value":1}).snapshot().toArray(function(error, result){
+          console.log(result)
           result = helperObj.jsonify(result)
           callback(null,result)
         });

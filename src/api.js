@@ -172,7 +172,7 @@ exports.getData = (event, context, globalCallback) => {
 
     context.callbackWaitsForEmptyEventLoop = false;
 
-    var firebaseReference = event.data.data_path;
+    var firebaseReference = event.data.data_url;
     var queryFilter = event.data.filter || {};
     var limit = event.data.limit || {}
 

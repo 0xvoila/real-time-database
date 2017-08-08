@@ -28,7 +28,17 @@ var helper = (function(){
             });
 }
 
-  this.jsonify = function(xPaths){
+  this.jsonify = function(arrXPath){
+
+    var xPaths = {}
+    for(var i=0;i<arrXPath.length;i++){
+      var json = arrXPath[i];
+      console.log(json.value)
+      xPaths[json['absolute_path']] = json.value
+    }
+
+    console.log(xPaths)
+
     var tmp_obj = {};
     var obj = tmp_obj;
     for(key in xPaths) {
