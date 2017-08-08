@@ -155,7 +155,7 @@ exports.getData = (event, context, globalCallback) => {
 
     context.callbackWaitsForEmptyEventLoop = false;
 
-    var firebaseReference = event.data.abs_path;
+    var firebaseReference = event.data.data_path;
     var queryFilter = event.data.filter || {};
     var limit = event.data.limit || {}
 
@@ -216,4 +216,4 @@ exports.pushData = (event, context, globalCallback) => {
       })
 };
 
-testData({"school":{"class":"4th","address":{"addressline1":"A-203", "addressline2":"G14"}}})
+//testData({"school":{"class":"4th","address":{"addressline1":"A-203", "addressline2":"G14"}}})

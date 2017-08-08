@@ -71,7 +71,8 @@ var Tree = function(){
     console.log("set events")
     if(eventJson.self){
       for(var i=0;i<eventJson.self.length;i++){
-        node.events.eventJson.self[i] = node.data.key
+        var event = eventJson.self[i]
+        node.events[event] = node.data.key
       }
     }
 
@@ -79,10 +80,12 @@ var Tree = function(){
     if(eventJson.parent && parentNode){
       for(var i=0;i<eventJson.parent.length;i++){
         if(eventJson.parent[i] == 'child_added'){
-          parentNode.events.eventJson.parent[i] = node.data.key
+          var event = eventJson.parent[i]
+          parentNode.events[event] = node.data.key
         }
         else {
-          parentNode.events.eventJson.parent[i] = parentNode.data.key
+          var event = eventJson.parent[i]
+          parentNode.events[event] = parentNode.data.key
         }
 
       }
@@ -92,7 +95,8 @@ var Tree = function(){
       var grandParent = parentNode.parent
       while(grandParent != null){
         for(var i=0;i<eventJson.length;i++){
-          grandParent.event.eventJson.grandParent[i] = grandParent.data.key
+          var event = eventJson.grandParent[i]
+          grandParent.events[event] = grandParent.data.key
         }
         grandParent = grandParent.parent;
       }
@@ -156,7 +160,7 @@ var Tree = function(){
 
         }, function(callback){
           // Now update parents with firebase events
-          var data = {"self":["value"], "parent":["child_added","value"], "grandParents" :["value","child_updated"]}
+          var events = {"self":["value"], "parent":["child_added","value"], "grandParents" :["value","child_updated"]}
 
           _this.setEvents(node,events,callback)
 
@@ -218,7 +222,8 @@ var Tree = function(){
   this.breadthFirstEventTrigger = function(node, _callback){
 
     async.each(node.children, function(child,callback){
-      async.forEachof(child.events, function(item,key,callback){
+      async.eachOf(child.events, function(item,key,callback){
+        console.log(child.data.key + " " + key)
         var connection = md5(child.data.key + key)
         var data = {absolute_path:child.data.key , data_url : item, connection:connection}
         helperObj.postUpdates(data,callback)
