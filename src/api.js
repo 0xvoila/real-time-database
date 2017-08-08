@@ -1,73 +1,67 @@
 'use strict'
 
 var helper = require('./helper.js');
-var database = require('./redis.js');
+var database = require('./database.js');
 var aws = require('aws-sdk');
+var {Tree,Node} = require('./tree.js')
 var async = require('async');
 var kinesis = new aws.Kinesis({region : 'ap-south-1'});
 var RedisClient = require('redis')
 var client = null;
+var MongoClient = require('mongodb').MongoClient;
+var url = 'mongodb://root:2June1989!@voila-cluster-shard-00-00-45vfv.mongodb.net:27017,voila-cluster-shard-00-01-45vfv.mongodb.net:27017,voila-cluster-shard-00-02-45vfv.mongodb.net:27017/test?ssl=true&replicaSet=voila-cluster-shard-0&authSource=admin'
 
-var connectToRedis = function(callback){
-  client = RedisClient.createClient(6379,'13.126.96.13')
-  client.on("connect", function(){
-    console.log("creating connection again")
-    callback(null,client);
-  })
-}
-
-   //your object
-  var json1 = {
-  "users": {
-    "amit": {
-      "my_date_of_birth": "June 23, 1912",
-      "full_name": "Alan Turing"
-    },
-    "gracehop": {
-      "date_of_birth": "December 9, 1906",
-      "full_name": "Grace Hopper",
+ var connectToDatabase = function(_callback){
+    if(client){
+      _callback(null,client);
+      return
     }
+    else{
+        MongoClient.connect(url,function(error,connection){
+        if(error){
+          console.log(error)
+          _callback(error)
+          return
+        }
+        console.log("connecting to database")
+        client = connection
+        _callback(null,connection);
+        return
+      })
+    }
+
   }
-};
 
 
-
-var json2 = {
-    "users": {
-      "gracehop": {
-        "nick_name" : "loosy"
-      }
-    }
-  };
-
-var json3 = {
-    name : "amit",
-    className : "second"
-  };
-
-
-var testData = function(){
+var testData = function(json){
 
    var firebaseReference = ",messages";
-    var helperObj = helper();
-    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,json1);
+    var myTree = new Tree()
+    var rootNode = new Node()
+    rootNode.parent = null;
+
+
+    myTree.toTree(rootNode,json,[])
 
     // delete subtree at reference
     async.series([function(callback){
-        database.deleteSubTree(connection,firebaseReference, callback);
+      if(client){
+          console.log("connection found")
+          callback(null,client)
+        }
+        else{
+          connectToDatabase(callback)
+        }
+      },function(callback){
+        console.log("I am here")
+        //tree.deleteSubTree(connection,firebaseReference, callback);
+        callback();
       },
       function(callback){
-        database.bulkWrite(connection,records, callback);
-      },
-      function(callback){
-        var insertDocumentArray = [];
-        for(var i=0;i<records.length;i++){
-              var firebaseRecord = {abs_path:records[i].abs_path};
-              insertDocumentArray.push(firebaseRecord)
-            }
-
-        record = {"documents":insertDocumentArray, "event_type":"value"}
-        kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"set_data"},callback);
+        myTree.depthFirstProcessing(client,rootNode, callback);
+      }, function(callback){
+          myTree.breadthFirst(rootNode)
+          callback()
       }],
       function(error, result){
         if(error) {
@@ -84,11 +78,21 @@ exports.setData = (event, context, globalCallback) => {
 
     context.callbackWaitsForEmptyEventLoop = false;
     var firebaseReference = event.data.reference;
-    var helperObj = helper();
-    var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,event.data.body);
+    var myTree = new Tree()
+    var rootNode = new Node()
+    rootNode.parent = null;
+    myTree.toTree(rootNode,firebaseReference.event.data,[])
 
     // delete subtree at reference
     async.series([function(callback){
+      if(client){
+          console.log("connection found")
+          callback(null,client)
+        }
+        else{
+          connectToRedis(callback)
+        }
+      },function(callback){
 
         database.deleteSubTree(client,firebaseReference, callback);
       },
@@ -97,13 +101,7 @@ exports.setData = (event, context, globalCallback) => {
         database.bulkWrite(client,records, callback);
       },
       function(callback){
-        var insertDocumentArray = [];
-        for(var i=0;i<records.length;i++){
-              var firebaseRecord = {abs_path:records[i].abs_path};
-              insertDocumentArray.push(firebaseRecord)
-            }
-
-        record = {"documents":insertDocumentArray, "event_type":"value"}
+        record = {"location":firebaseReference, "event_type":"value"}
         kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"set_data"},callback);
       }],
       function(error, result){
@@ -127,16 +125,19 @@ exports.updateData = (event, context, globalCallback) => {
     var records = helperObj.parseJsonToFindAbsolutePath(firebaseReference,event.data.body);
 
     async.series([function(callback){
+      if(client){
+          console.log("connection found")
+          callback(null,client)
+        }
+        else{
+          connectToRedis(callback)
+        }
+      },function(callback){
 
         database.bulkWrite(client,records, callback);
       },
       function(callback){
-        var insertDocumentArray = [];
-        for(var i=0;i<records.length;i++){
-              var firebaseRecord = {abs_path:records[i].abs_path};
-              insertDocumentArray.push(firebaseRecord)
-            }
-        record = {"documents":insertDocumentArray, "event_type":"value"}
+        record = {"location":firebaseReference, "event_type":"value"}
         kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"update_data"},callback);
       }],
       function(error, result){
@@ -184,7 +185,8 @@ exports.pushData = (event, context, globalCallback) => {
     context.callbackWaitsForEmptyEventLoop = false;
     var firebaseReference = event.data.reference;
     var helperObj = helper();
-    var records = helperObj.parseJsonArrayToFindAbsolutePath(firebaseReference,event.data.body);
+    var objectId = helperObj.getObjectId()
+    var records = helperObj.parseJsonArrayToFindAbsolutePath(firebaseReference,objectId, event.data.body);
     console.log(records);
     async.waterfall([function(callback){
         if(client){
@@ -200,12 +202,7 @@ exports.pushData = (event, context, globalCallback) => {
         database.bulkWrite(client,records, callback);
       },
       function(result, callback){
-        var insertDocumentArray = [];
-        for(var i=0;i<records.length;i++){
-              var firebaseRecord = {abs_path:records[i].abs_path};
-              insertDocumentArray.push(firebaseRecord)
-            }
-        var record = {"documents":insertDocumentArray, "event_type":"child_added"}
+        var record = {"location":firebaseReference + "/" + objectId, "event_type":"child_added"}
         kinesis.putRecord({Data:JSON.stringify(record),StreamName:'firebase-events',PartitionKey:"push_data"},callback);
       }],
       function(error, result){
@@ -219,3 +216,4 @@ exports.pushData = (event, context, globalCallback) => {
       })
 };
 
+testData({"school":{"class":"4th","address":{"addressline1":"A-203", "addressline2":"G14"}}})

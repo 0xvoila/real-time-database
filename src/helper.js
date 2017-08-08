@@ -6,8 +6,13 @@ var ObjectID = require('mongodb').ObjectID;
 var helper = (function(){
 
   this.jsonParse = [];
-  this.ObjectId = new ObjectID();
-  this.ObjectId = this.ObjectId.toHexString()
+
+
+  this.getObjectId = function(){
+    var ObjectId = new ObjectID();
+    ObjectId = ObjectId.toHexString()
+    return ObjectId
+  }
 
   this.postUpdates = function(path,data){
 
@@ -55,14 +60,14 @@ var helper = (function(){
     return this.jsonParse;
   }
 
-  this.parseJsonArrayToFindAbsolutePath = function(firebaseReference,json){
+  this.parseJsonArrayToFindAbsolutePath = function(firebaseReference,ObjectId, json){
 
     for (var key in json){
       if (json[key] != null && typeof(json[key])=="object"){
-       this.parseJsonToFindAbsolutePath(firebaseReference + "/" + this.ObjectId + "/" + key,json[key]);
+       this.parseJsonToFindAbsolutePath(firebaseReference + "/" + ObjectId + "/" + key,json[key]);
       }
       else {
-        this.jsonParse.push({abs_path:firebaseReference + "/" + this.ObjectId + "/" + key, element:key, value:json[key]});
+        this.jsonParse.push({abs_path:firebaseReference + "/" + ObjectId + "/" + key, element:key, value:json[key]});
       }
     }
     return this.jsonParse;
