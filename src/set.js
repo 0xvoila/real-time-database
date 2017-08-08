@@ -14,11 +14,16 @@ var url = 'mongodb://root:2June1989!@voila-cluster-shard-00-00-45vfv.mongodb.net
 
  var connectToDatabase = function(_callback){
 
-    console.log("** New Mongo Connection **")
     MongoClient.connect(url,function(error,connection){
-      console.log("connecting to database")
-      client = connection
-      _callback(null,client);
+      if(error){
+        console.log(error)
+        _callback(error)
+      }
+      else{
+
+        client = connection
+        _callback(null,client);
+      }
   })
 }
 
@@ -27,7 +32,6 @@ exports.setData = (event, context, globalCallback) => {
     context.callbackWaitsForEmptyEventLoop = false;
     var firebaseReference = "/messages";
     var json = {"messages":event.data.body}
-    console.log(json)
     var myTree = new Tree()
     var rootNode = new Node()
     rootNode.parent = null;
@@ -45,13 +49,11 @@ exports.setData = (event, context, globalCallback) => {
           connectToDatabase(callback)
         }
       },function(callback){
-        console.log("I am here")
         database.removeSubTree(client,firebaseReference, callback);
       },
       function(callback){
         myTree.depthFirstProcessing(client,rootNode, callback);
       }, function(callback){
-        console.log("calling breadthFirstEventTrigger")
         myTree.breadthFirstEventTrigger(rootNode,callback)
       }],
       function(error, result){

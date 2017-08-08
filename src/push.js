@@ -14,17 +14,32 @@ var url = 'mongodb://root:2June1989!@voila-cluster-shard-00-00-45vfv.mongodb.net
 
  var connectToDatabase = function(_callback){
 
-    console.log("** New Mongo Connection **")
-    MongoClient.connect(url,function(error,connection){
-      console.log("connecting to database")
-      client = connection
-      _callback(null,client);
+    var options ={
+          server: {
+                    socketOptions: {keepAlive: 1}
+                  },
+          poolSize:100,
+          replset: {
+                    rs_name: 'voila-cluster-shard-0',
+                    socketOptions: {keepAlive: 1}
+                  }
+    }
+
+    MongoClient.connect(url,options,function(error,connection){
+      if(error){
+        console.log(error)
+        _callback(error)
+      }
+      else{
+
+        client = connection
+        _callback(null,client);
+      }
+
   })
 }
 
 exports.pushData = (event, context, globalCallback) => {
-
-    console.log( "client is" + client)
 
     context.callbackWaitsForEmptyEventLoop = false;
     var helperObj = helper();
@@ -54,7 +69,6 @@ exports.pushData = (event, context, globalCallback) => {
       function(callback){
         myTree.depthFirstProcessing(client,rootNode, callback);
       }, function(callback){
-        console.log("calling breadthFirstEventTrigger")
         myTree.breadthFirstEventTrigger(rootNode,callback)
       }],
       function(error, result){

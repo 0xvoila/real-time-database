@@ -14,11 +14,16 @@ var url = 'mongodb://root:2June1989!@voila-cluster-shard-00-00-45vfv.mongodb.net
 
  var connectToDatabase = function(_callback){
 
-    console.log("** New Mongo Connection **")
     MongoClient.connect(url,function(error,connection){
-      console.log("connecting to database")
-      client = connection
-      _callback(null,client);
+      if(error){
+        console.log(error)
+        _callback(error)
+      }
+      else{
+
+        client = connection
+        _callback(null,client);
+      }
   })
 }
 
@@ -46,7 +51,6 @@ exports.updateData = (event, context, globalCallback) => {
       function(callback){
         myTree.depthFirstProcessing(client,rootNode, callback);
       }, function(callback){
-        console.log("calling breadthFirstEventTrigger")
         myTree.breadthFirstEventTrigger(rootNode,callback)
       }],
       function(error, result){
