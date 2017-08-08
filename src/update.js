@@ -11,6 +11,17 @@ var RedisClient = require('redis')
 var client = null;
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://root:2June1989!@voila-cluster-shard-00-00-45vfv.mongodb.net:27017,voila-cluster-shard-00-01-45vfv.mongodb.net:27017,voila-cluster-shard-00-02-45vfv.mongodb.net:27017/test?ssl=true&replicaSet=voila-cluster-shard-0&authSource=admin'
+
+ var connectToDatabase = function(_callback){
+
+    console.log("** New Mongo Connection **")
+    MongoClient.connect(url,function(error,connection){
+      console.log("connecting to database")
+      client = connection
+      _callback(null,client);
+  })
+}
+
 exports.updateData = (event, context, globalCallback) => {
 
     context.callbackWaitsForEmptyEventLoop = false;
