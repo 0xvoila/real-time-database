@@ -15,13 +15,13 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
 
   })
 
-  for( var i=0; i<10;i++){
+  setInterval(function(){
 
      json = {
-          "chat_room_id" : i,
-          "body" : i
+          "chat_room_id" : "goog",
+          "body" : "amit"
         }
 
      firebaseService.push("/messages",json);
-   }
+   },300)
 });
