@@ -7,8 +7,11 @@
 <body>
 
 <div ng-app="myApp" ng-controller="myController">
-  <div ng-repeat="(messageKey,data) in messages" >
-    {{data.body.counter}}
+  <div ng-repeat="messageKey in messages" >
+
+<div ng-repeat="(k, v) in messageKey" >
+{{v.body.counter}}
+</div>
   </div>
 </div>
 

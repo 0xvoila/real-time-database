@@ -23,7 +23,7 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
         return
       }
       else{
-        $scope.messages.push(data)
+        $scope.messages.push(data.messages)
       }
 
     });
@@ -40,6 +40,6 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
 
        firebaseService.push("/messages",json);
        i++;
-     },50);
+     },1000);
   }
 });
