@@ -29,7 +29,7 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
     });
   }
 
-  if(gup("type") == "get" || gup("type") == "all"){
+  if(gup("type") == "push" || gup("type") == "all"){
     setInterval(function(){
 
        json = {
