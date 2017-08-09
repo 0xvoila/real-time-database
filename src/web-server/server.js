@@ -55,7 +55,6 @@ app.post("/updates", function(req, res) {
 app.post("/push", function(req,res){
 
     console.log("client value " + client)
-    context.callbackWaitsForEmptyEventLoop = false;
     var helperObj = helper();
     var objectId = helperObj.getObjectId()
     var firebaseReference = "/messages";

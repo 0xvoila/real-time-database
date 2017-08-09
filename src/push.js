@@ -6,24 +6,13 @@ var aws = require('aws-sdk');
 var {Tree,Node} = require('./tree.js')
 var async = require('async');
 var circularJSON = require('circular-json');
-var kinesis = new aws.Kinesis({region : 'ap-south-1'});
-var RedisClient = require('redis')
 var client = null;
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://root:2June1989!@voila-cluster-shard-00-00-45vfv.mongodb.net:27017,voila-cluster-shard-00-01-45vfv.mongodb.net:27017,voila-cluster-shard-00-02-45vfv.mongodb.net:27017/test?ssl=true&replicaSet=voila-cluster-shard-0&authSource=admin'
 
  var connectToDatabase = function(_callback){
 
-    var options ={
-          server: {
-                    socketOptions: {keepAlive: 1}
-                  },
-          poolSize:100,
-          replset: {
-                    rs_name: 'voila-cluster-shard-0',
-                    socketOptions: {keepAlive: 1}
-                  }
-    }
+    var options ={poolSize:100}
 
     MongoClient.connect(url,options,function(error,connection){
       if(error){
@@ -41,6 +30,7 @@ var url = 'mongodb://root:2June1989!@voila-cluster-shard-00-00-45vfv.mongodb.net
 
 exports.pushData = (event, context, globalCallback) => {
 
+    console.log("client value " + client)
     context.callbackWaitsForEmptyEventLoop = false;
     var helperObj = helper();
     var objectId = helperObj.getObjectId()
@@ -63,6 +53,7 @@ exports.pushData = (event, context, globalCallback) => {
           callback(null)
         }
         else{
+          console.log("creating new connection")
           connectToDatabase(callback)
         }
       },
