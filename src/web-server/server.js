@@ -88,6 +88,26 @@ app.post("/push", function(req,res){
       })
 })
 
+
+app.get("/get", function(req,res){
+
+    var firebaseReference = req.body.data_url;
+    var queryFilter =  {};
+    var limit =  {}
+
+    async.waterfall([function(callback){
+            database.createSnapshot(mongodb,firebaseReference, queryFilter, limit, callback)
+
+    }], function(error, result){
+        if(error){
+          console.log("error" + error)
+        }
+        else{
+          console.log("all done baby")
+        }
+    })
+})
+
 // Handle connection
 io.on('connection', function (socket) {
     socket.on('join_room', function (data) {
