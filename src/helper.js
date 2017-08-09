@@ -16,7 +16,7 @@ var helper = (function(){
   }
 
   this.postUpdates = function(data, _callback){
-   var url = 'http://54.83.184.40/updates/'
+   var url = 'http://localhost/updates/'
             var options = {
               body: data,
               json: true,
