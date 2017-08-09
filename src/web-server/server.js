@@ -86,7 +86,7 @@ app.post("/push", function(req,res){
 })
 
 
-app.get("/get", function(req,res){
+app.post("/get", function(req,res){
 
     var firebaseReference = req.body.data_url;
     var queryFilter =  {};
