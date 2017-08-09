@@ -254,10 +254,7 @@ var Tree = function(){
   }
 }
 
-module.exports = {
-  Node : Node,
-  Tree : Tree
-}
+module.exports = Tree
 
 
 
