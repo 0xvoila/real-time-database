@@ -3,8 +3,6 @@ var http = require('http');
 var express = require('express');
 var md5 = require('md5')
 var async = require('async');
-var aws = require('aws-sdk');
-
 var helper = require('../helper.js');
 var database = require('../database.js');
 var Tree = require('../tree.js')
