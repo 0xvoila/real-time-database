@@ -4,31 +4,31 @@ myApp.service("firebaseService", function($http){
 
   this.socket = null;
 
-   this.ref = function(absolutePath,event_type,callback){
+  this.database = function(database){
 
-    if(!this.socket){
-      console.log("connection already exists")
-      this.database()
-    }
-
-    this.socket.emit('join_room', { abs_path: absolutePath, event_type :event_type});
-    this.socket.on("new_data", function(data){
-    $http.post('http://54.83.184.40/get',  data).then(function(data){
-      callback(null,data.data);
-    }, function(error){
-      callback(error)
-    });
-  })
-    return this
-  }
-
-  this.database = function(){
-
+     var _this = this
      if(!this.socket){
-      this.socket = io('http://54.83.184.40');
+      _this.socket = io('http://54.83.184.40');
      }
+     return new function(){
+        this.ref = function(reference){
+          _this.reference = reference
 
-     return this.ref
+          return new function(){
+            this.on = function(event,callback){
+              _this.socket.emit('join_room', { abs_path: _this.reference, event_type :event});
+                _this.socket.on("new_data", function(data){
+                    $http.post('http://54.83.184.40/get',  data).then(function(data){
+                      callback(null,data.data);
+                    }, function(error){
+                      callback(error)
+                    });
+                  })
+
+            }
+          }
+        }
+     }
   }
 
   this.set = function(absolutePath,data,callback){

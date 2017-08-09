@@ -17,7 +17,7 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
 
   if(gup("type") == "get" || gup("type") == "all"){
 
-    firebaseService.database().ref("/messages", 'child_added', function(error, data){
+    firebaseService.database().ref("/messages").on('child_added', function(error, data){
       if(error){
         throw error;
         return
