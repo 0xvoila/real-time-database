@@ -38,6 +38,6 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
           }
 
        firebaseService.push("/messages",json);
-     },300);
+     },50);
   }
 });
