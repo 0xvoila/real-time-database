@@ -7,7 +7,6 @@ var helper = require('../helper.js');
 var database = require('../database.js');
 var Tree = require('../tree.js')
 var Node = require("../node.js")
-var lzString = require("lz-string")
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://root:2June1989!@voila-cluster-shard-00-00-45vfv.mongodb.net:27017,voila-cluster-shard-00-01-45vfv.mongodb.net:27017,voila-cluster-shard-00-02-45vfv.mongodb.net:27017/test?ssl=true&replicaSet=voila-cluster-shard-0&authSource=admin'
 //var url = 'mongodb://root:2June1989!@hiesenburg-cluster-shard-00-00-45vfv.mongodb.net:27017,hiesenburg-cluster-shard-00-01-45vfv.mongodb.net:27017,hiesenburg-cluster-shard-00-02-45vfv.mongodb.net:27017/test?ssl=true&replicaSet=hiesenburg-cluster-shard-0&authSource=admin'
@@ -103,7 +102,7 @@ app.post("/get", function(req,res){
         }
         else{
           console.log("all done baby")
-          res.send(lzString.compress(result))
+          res.send(result)
         }
     })
 })

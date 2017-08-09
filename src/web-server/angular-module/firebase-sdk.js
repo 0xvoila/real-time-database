@@ -18,7 +18,7 @@ myApp.service("firebaseService", function($http){
               _this.socket.emit('join_room', { abs_path: _this.reference, event_type :event});
                 _this.socket.on("new_data", function(data){
                     $http.post('http://54.83.184.40/get',  data).then(function(data){
-                      callback(null,LZString.decompress(data.data));
+                      callback(null,data.data);
                     }, function(error){
                       callback(error)
                     });
