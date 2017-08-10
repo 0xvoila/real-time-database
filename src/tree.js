@@ -72,7 +72,8 @@ var Tree = function(){
     if(eventJson.self){
       for(var i=0;i<eventJson.self.length;i++){
         var event = eventJson.self[i]
-        node.events[event] = node.data.key
+        var eventHash = md5(node.data.key + event)
+        node.events[eventHash] = {data_url : node.data.key,event:event}
       }
     }
 
@@ -81,11 +82,13 @@ var Tree = function(){
       for(var i=0;i<eventJson.parent.length;i++){
         if(eventJson.parent[i] == 'child_added' || eventJson.parent[i] == "child_changed" || eventJson.parent[i] == "child_removed"){
           var event = eventJson.parent[i]
-          parentNode.events[event] = node.data.key
+          var eventHash = md5(node.data.key + event)
+          parentNode.events[eventHash] = {data_url:node.data.key ,event:event}
         }
         else {
           var event = eventJson.parent[i]
-          parentNode.events[event] = parentNode.data.key
+          var eventHash = md5(parentNode.data.key + event)
+          parentNode.events[eventHash] = {data_url:parentNode.data.key, event:event}
         }
 
       }
@@ -96,7 +99,8 @@ var Tree = function(){
       while(grandParent != null){
         for(var i=0;i<eventJson.length;i++){
           var event = eventJson.grandParent[i]
-          grandParent.events[event] = grandParent.data.key
+          var eventHash = md5(grandParent.data.key + event)
+          grandParent.events[eventHash] = {data_url:grandParent.data.key,event:event}
         }
         grandParent = grandParent.parent;
       }
@@ -222,10 +226,8 @@ var Tree = function(){
   this.breadthFirstEventTrigger = function(node, _callback){
 
     async.each(node.children, function(child,callback){
-      async.eachOf(child.events, function(item,key,callback){
-        console.log(child.data.key + " " + key)
-        var connection = md5(child.data.key + key)
-        var data = {absolute_path:child.data.key , data_url : item, connection:connection}
+      async.eachOf(child.events, function(item,hashKey,callback){
+        var data = {absolute_path:child.data.key , data_url : item.data_url, event:item.event connection:hashKey}
         helperObj.postUpdates(data,callback)
       },function(error, result){
         if(error) throw error
