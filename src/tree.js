@@ -227,7 +227,7 @@ var Tree = function(){
 
     async.each(node.children, function(child,callback){
       async.eachOf(child.events, function(item,hashKey,callback){
-        var data = {absolute_path:child.data.key , data_url : item.data_url, event:item.event connection:hashKey}
+        var data = {absolute_path:child.data.key , data_url : item.data_url, event:item.event, connection:hashKey}
         helperObj.postUpdates(data,callback)
       },function(error, result){
         if(error) throw error
