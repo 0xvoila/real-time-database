@@ -82,7 +82,7 @@ var Tree = function(){
       for(var i=0;i<eventJson.parent.length;i++){
         if(eventJson.parent[i] == 'child_added' || eventJson.parent[i] == "child_changed" || eventJson.parent[i] == "child_removed"){
           var event = eventJson.parent[i]
-          var eventHash = md5(node.data.key + event)
+          var eventHash = md5(parentNode.data.key + event)
           parentNode.events[eventHash] = {data_url:node.data.key ,event:event}
         }
         else {
