@@ -15,7 +15,7 @@ myApp.service("firebaseService", function($http){
 
           return new function(){
             this.on = function(event,callback){
-              _this.socket.emit('join_room', { abs_path: _this.reference, event_type :event});
+              _this.socket.emit('join_room', { absolute_path: _this.reference, event_type :event});
                 _this.socket.on("new_data", function(data){
                     $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
                       callback(null,data.data);

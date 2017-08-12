@@ -33,7 +33,7 @@ var Tree = function(){
   this.toJson = function(rootNode,xPaths){
 
       for(var k=0;k<xPaths.length;k++){
-        var v = xPaths[k].abs_path.split("/")
+        var v = xPaths[k].absolute_path.split("/")
         v.splice(0,1)
         var value = xPaths[k].value;
         createTree(rootNode, v, value)
