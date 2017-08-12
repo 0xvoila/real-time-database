@@ -56,17 +56,17 @@ app.post("/push", function(req,res){
 
     var helperObj = helper();
     var objectId = helperObj.getObjectId()
-    var firebaseReference = "/messages";
-    var json = req.body
-    var y = {}
-    y[objectId] = json
-    var v = {}
-    v["messages"] = y
+    var firebaseReference = req.body.reference + "/" + objectId;
+    var body = req.body.body
+
+    var result = helperObj.parseJsonToFindAbsolutePath(firebaseReference,body)
+
     var myTree = new Tree()
     var rootNode = new Node()
     rootNode.parent = null;
-
-    myTree.toTree(rootNode,v,[])
+    rootNode.data.key = "/"
+    var json = myTree.toJson(rootNode,result)
+    myTree.toTree(rootNode,json,[])
 
     // delete subtree at reference
     async.series([

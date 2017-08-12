@@ -1,8 +1,11 @@
+const util = require('util')
+
 var Node = function(){
     this.data = {};
     this.parent = null;
     this.children = []
-    this.events = {}
+    this.json = {}
+
   }
 
 var toJson = function(xPaths){
@@ -18,20 +21,33 @@ var toJson = function(xPaths){
       }
 
       depthFirst(rootNode)
+      console.log(util.inspect(rootNode.json, false, null))
   }
 
   var depthFirst = function (rootNode){
 
     var children = rootNode.children
     var length = children.length
-    if(rootNode == null){
-      return
+    if(rootNode.children.length == 0){
+      //console.log(rootNode)
+      var json = {}
+      //console.log(rootNode.data.key , rootNode.data.value)
+      json[rootNode.data.key] = rootNode.data.value
+      return json
     }
+    var composeJson = {}
     for(var i=0;i<length;i++){
 
-      depthFirst(children[i])
+        var x = depthFirst(children[i])
+        //console.log(x)
+        for(var key in x){
+          composeJson[key] = x[key]
+        }
+
     }
-    console.log(rootNode.data)
+    //console.log(composeJson)
+    rootNode.json[rootNode.data.key] = composeJson
+    return rootNode.json
   }
 
   var createTree = function(rootNode, array,value){
@@ -74,10 +90,15 @@ var toJson = function(xPaths){
 
   }
 
+
+
 var rootNode = new Node();
+rootNode.data.key = "/"
 var xPaths = [
-                {"key" : "/school/name", "value":"amit"},
-                {"key" : "/school/section" , "value" : "5th"}
+                {"key" : "/country/india/school/name", "value":"amit"},
+                {"key" : "/country/india/minister/name", "value":"narender"},
+                {"key" : "/country/china/school/section" , "value" : "5th"},
+                {"key" : "/country/china/minister/name" , "value" : "yui"},
              ]
 
 toJson(xPaths)
