@@ -95,7 +95,7 @@ app.post("/get", function(req,res){
     var firebaseReference = req.body.data_url;
     var queryFilter =  {};
     var limit =  {}
-
+    var myTree = new Tree()
     async.waterfall([function(callback){
             database.createSnapshot(mongodb,firebaseReference, queryFilter, limit, callback)
 
