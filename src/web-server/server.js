@@ -66,7 +66,8 @@ app.post("/push", function(req,res){
     rootNode.parent = null;
     rootNode.data.key = "/"
     var json = myTree.toJson(rootNode,result)
-    rootNode.data = {}
+    var rootNode = new Node()
+    rootNode.parent = null;
     myTree.toTree(rootNode,json,[])
 
     // delete subtree at reference
