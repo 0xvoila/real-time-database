@@ -82,7 +82,6 @@ var database = (function(){
   this.createSnapshot = function(connection,path,whereQuery, limitLast, _callback){
 
     var helperObj = helper();
-    var Tree = new Tree()
     async.waterfall([
       function(callback){
         var firebaseRecord = { absolute_path: new RegExp("^" + path)};
