@@ -109,7 +109,7 @@ app.post("/get", function(req,res){
           var rootNode = new Node()
           rootNode.parent = null;
           rootNode.data.key = "/"
-          myTree.toJson(rootNode,result)
+          var result = myTree.toJson(rootNode,result)
           res.send(result)
         }
     })
