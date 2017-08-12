@@ -2,7 +2,7 @@
 var helper = require('./helper.js');
 var request = require('request');
 var async = require('async');
-var Tree = require("tree.js")
+var Tree = require("./tree.js")
 
 var database = (function(){
 
