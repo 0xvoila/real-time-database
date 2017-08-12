@@ -146,7 +146,7 @@ var Tree = function(){
   },
 
   this.setEvents = function(node,eventJson, _callback){
-    console.log("set events")
+
     if(eventJson.self){
       for(var i=0;i<eventJson.self.length;i++){
         var event = eventJson.self[i]
@@ -214,7 +214,6 @@ var Tree = function(){
 
     }, function(result,callback){
       if(result){
-        console.log("XXXX")
         // it means it exists then do upate and trigger events
         async.series([function(callback){
           database.updateNode(dbConnection,{absolute_path:node.data.key},{absolute_path:node.data.key, value:node.data.value}, callback)
@@ -237,7 +236,6 @@ var Tree = function(){
       else{
         async.series([function(callback){
           // insert into database
-          console.log("adding node to database")
           database.addNode(dbConnection,{absolute_path:node.data.key, value:node.data.value}, callback)
 
         }, function(callback){
