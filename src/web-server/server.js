@@ -84,6 +84,10 @@ app.post("/push", function(req,res){
         }
         else {
           console.log("all done baby")
+          var rootNode = new Node()
+          rootNode.parent = null;
+          rootNode.data.key = "/"
+          Tree.toJson(rootNode,result)
           res.send(result)
         }
       })

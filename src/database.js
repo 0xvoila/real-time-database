@@ -2,7 +2,7 @@
 var helper = require('./helper.js');
 var request = require('request');
 var async = require('async');
-var Tree = require("./tree.js")
+
 
 var database = (function(){
 
@@ -89,7 +89,6 @@ var database = (function(){
         var firebaseRecord = { absolute_path: new RegExp("^" + path)};
         console.log(firebaseRecord)
         connection.collection("test").find(firebaseRecord,{"absolute_path":1,"_id":0,"value":1}).snapshot().toArray(function(error, result){
-          result = Tree.toJson(result)
           callback(null,result)
         });
       }
