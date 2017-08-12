@@ -66,7 +66,7 @@ var helper = (function(){
        this.parseJsonToFindAbsolutePath(firebaseReference + "/" + key,json[key]);
       }
       else {
-        this.jsonParse.push({key:abs_path:firebaseReference + "/" + key, element:key, value:json[key]});
+        this.jsonParse.push({abs_path:firebaseReference + "/" + key, element:key, value:json[key]});
       }
     }
     return this.jsonParse;
