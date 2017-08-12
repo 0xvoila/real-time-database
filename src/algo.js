@@ -14,7 +14,7 @@ var toJson = function(xPaths){
       this.rootNode.parent = null
 
       for(var k=0;k<xPaths.length;k++){
-        var v = xPaths[k].key.split("/")
+        var v = xPaths[k].abs_path.split("/")
         v.splice(0,1)
         var value = xPaths[k].value;
         createTree(rootNode, v, value)
@@ -95,11 +95,11 @@ var toJson = function(xPaths){
 var rootNode = new Node();
 rootNode.data.key = "/"
 var xPaths = [
-                {"key" : "/country/india/school/name", "value":"amit"},
-                {"key" : "/country/india/minister/name", "value":"narender"},
-                {"key" : "/country/china/school/section" , "value" : "5th"},
-                {"key" : "/country/china/minister/name" , "value" : "yui"},
-             ]
+  { abs_path: '/messages/598ead4558b3a95d4f41dba8/chat_room_id',element: 'chat_room_id',value: 'goog' },
+  { abs_path: '/messages/598ead4558b3a95d4f41dba8/body',element: 'body',value: 'amit' },
+  { abs_path: '/messages/598ead4558b3a95d4f41dba8/counter',element: 'counter',value: 59 }
+
+  ]
 
 toJson(xPaths)
 
