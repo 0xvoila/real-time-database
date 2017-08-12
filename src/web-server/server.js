@@ -16,9 +16,9 @@ var url = 'mongodb://voila:246810aa@lamppost.2.mongolayer.com:10758,lamppost.3.m
 var app = express();
 var mongodb = null;
 var server = http.createServer(app);
-io.adapter(redis({ host: 'localhost', port: 6379 }));
 // Pass a http.Server instance to the listen method
 var io = require('socket.io').listen(server);
+io.adapter(redis({ host: 'localhost', port: 6379 }));
 
 // The server should start listening
 server.listen(80);
