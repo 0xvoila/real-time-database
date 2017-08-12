@@ -87,7 +87,7 @@ app.post("/push", function(req,res){
           var rootNode = new Node()
           rootNode.parent = null;
           rootNode.data.key = "/"
-          Tree.toJson(rootNode,result)
+          myTee.toJson(rootNode,result)
           res.send(result)
         }
       })
