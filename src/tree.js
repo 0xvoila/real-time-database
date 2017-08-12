@@ -40,7 +40,6 @@ var Tree = function(){
       }
 
       depthFirst(rootNode)
-      console.log(util.inspect(rootNode.json, false, null))
   }
 
   var depthFirst = function (rootNode){
