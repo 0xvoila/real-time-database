@@ -40,6 +40,7 @@ var Tree = function(){
       }
 
       depthFirst(rootNode)
+      return rootNode.json
   }
 
   var depthFirst = function (rootNode){
