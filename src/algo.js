@@ -1,4 +1,4 @@
-const util = require('util')
+
 
 var Node = function(){
     this.data = {};
@@ -21,7 +21,7 @@ var toJson = function(xPaths){
       }
 
       depthFirst(rootNode)
-      console.log(util.inspect(rootNode.json, false, null))
+      console.log(rootNode.json)
   }
 
   var depthFirst = function (rootNode){

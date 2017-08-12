@@ -18,6 +18,7 @@ var Node = function(){
     this.parent = null;
     this.children = []
     this.events = {}
+    this.json = {}
   }
 
 module.exports = Node;
