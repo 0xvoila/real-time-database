@@ -116,7 +116,7 @@ app.post("/get", function(req,res){
 // Handle connection
 io.on('connection', function (socket) {
     socket.on('join_room', function (data) {
-        var connection = md5(data.abs_path + data.event_type)
+        var connection = md5(data.absolute_path + data.event_type)
         socket.join(connection);
         // now store room in database so that it can access by other
     });
