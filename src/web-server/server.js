@@ -7,6 +7,7 @@ var helper = require('../helper.js');
 var database = require('../database.js');
 var Tree = require('../tree.js')
 var Node = require("../node.js")
+var redis = require('socket.io-redis');
 var MongoClient = require('mongodb').MongoClient;
 //var url = 'mongodb://root:2June1989!@voila-cluster-shard-00-00-45vfv.mongodb.net:27017,voila-cluster-shard-00-01-45vfv.mongodb.net:27017,voila-cluster-shard-00-02-45vfv.mongodb.net:27017/test?ssl=true&replicaSet=voila-cluster-shard-0&authSource=admin'
 var url = 'mongodb://voila:246810aa@lamppost.2.mongolayer.com:10758,lamppost.3.mongolayer.com:10728/firebase?replicaSet=set-554218a44ec6c0c54f000fdd'
@@ -15,6 +16,7 @@ var url = 'mongodb://voila:246810aa@lamppost.2.mongolayer.com:10758,lamppost.3.m
 var app = express();
 var mongodb = null;
 var server = http.createServer(app);
+io.adapter(redis({ host: 'localhost', port: 6379 }));
 // Pass a http.Server instance to the listen method
 var io = require('socket.io').listen(server);
 

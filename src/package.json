@@ -17,6 +17,7 @@
     "mongodb": "^2.2.30",
     "redis": "^2.7.1",
     "request": "^2.81.0",
+    "socket.io-redis": "^5.1.0",
     "time-uuid": "^1.0.0"
   }
 }
