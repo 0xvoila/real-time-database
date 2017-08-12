@@ -129,7 +129,7 @@ var Tree = function(){
       node = newNode;
 
       if(typeof(json[key]) == "object"){
-        pathKeys.push( key)
+        pathKeys.push( "/" + key)
         this.toTree(node,json[key],pathKeys)
       }
     }
