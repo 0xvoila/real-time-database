@@ -86,7 +86,6 @@ app.post("/push", function(req,res){
           return
         }
         else {
-          console.log("all done baby")
           res.send(result)
         }
       })
@@ -119,14 +118,15 @@ app.post("/get", function(req,res){
 // Handle connection
 io.of("/on").on('connection', function (socket) {
     socket.on('on', function (data) {
+      console.log("connection in namespace on")
         var connection = md5(data.absolute_path + data.event_type)
         socket.join(connection)
     })
   });
 
 io.of("/once").on('connection', function (socket) {
-    console.log("connection in namespace once")
     socket.on('once', function (data) {
+        console.log("connection in namespace once")
         var connection = md5(data.absolute_path + data.event_type)
         socket.join(connection)
     });
