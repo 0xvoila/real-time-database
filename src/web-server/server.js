@@ -51,7 +51,8 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 app.post("/updates", function(req, res) {
     var data = {"abs_path" : req.body.absolute_path, "data_url" : req.body.data_url}
     console.log(data)
-    io.to(req.body.connection).emit("new_data", data);
+    io.of("/on").to(req.body.connection).emit("data", data);
+    io.of("/once").to(req.body.connection).emit("data", data);
     res.send({});
 });
 
@@ -117,13 +118,20 @@ app.post("/get", function(req,res){
 })
 
 // Handle connection
-io.on('connection', function (socket) {
-    socket.on('join_room', function (data) {
+io.of("/on").on('connection', function (socket) {
+    socket.on('on', function (data) {
         var connection = md5(data.absolute_path + data.event_type)
         socket.join(connection)
-        // io.of("/").adapter.remoteJoin(socket.id,connection, function(error, result){
-        //     console.log("joined room")
-        // });
-        // now store room in database so that it can access by other
+    });
+
+io.of("/once").on('connection', function (socket) {
+    socket.on('once', function (data) {
+        var connection = md5(data.absolute_path + data.event_type)
+        socket.join(connection)
+    });
+
+    socket.on('off', function (data) {
+        var connection = md5(data.absolute_path + data.event_type)
+        socket.leave(connection)
     });
 });

@@ -7,7 +7,8 @@ myApp.service("firebaseService", function($http){
 
      var _this = this
      if(!this.socket){
-      _this.socket = io('http://firebase.shawacademy.com');
+      _this.onNSP = io('http://firebase.shawacademy.com/on');
+      _this.onceNSP = io('http://firebase.shawacademy.com/once');
      }
      return new function(){
         this.ref = function(reference){
@@ -15,15 +16,25 @@ myApp.service("firebaseService", function($http){
 
           return new function(){
             this.on = function(event,callback){
-              _this.socket.emit('join_room', { absolute_path: _this.reference, event_type :event});
-                _this.socket.on("new_data", function(data){
+              _this.onNSP.emit('on', { absolute_path: _this.reference, event_type :event});
+                _this.onNSP.on("data", function(data){
                     $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
                       callback(null,data.data);
                     }, function(error){
                       callback(error)
                     });
                   })
-
+            },
+            this.once = function(event,callback){
+              _this.onceNSP.emit('once',{absolute_path:_this.reference, event_type:event});
+                _this.onceNSP.on("data", function(){
+                    $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
+                      callback(null,data.data)
+                      _this.onceNSP.emit("off",{absolute_path:_this.reference, event_type:event})
+                    }, function(error){
+                      callback(error)
+                    })
+                })
             }
           }
         }
