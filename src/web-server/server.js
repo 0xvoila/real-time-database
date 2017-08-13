@@ -140,7 +140,7 @@ io.of("/once").on('connection', function (socket) {
     });
 
     socket.on('off', function (data) {
-      console.log("switching off connection in ONE SPACE")
+      console.log("switching off connection in ONCE SPACE")
       var connection = md5(data.absolute_path + data.event_type)
       console.log(connection)
       socket.leave(connection)
