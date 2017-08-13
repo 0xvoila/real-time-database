@@ -51,7 +51,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 app.post("/updates", function(req, res) {
     var data = {"abs_path" : req.body.absolute_path, "data_url" : req.body.data_url}
     console.log(data)
-    io.to(req.body.connection).emit("new_data", data);
+    io.of("/").adapter.to(req.body.connection).emit("new_data", data);
     res.send({});
 });
 
