@@ -19,7 +19,7 @@ var mongodb = null;
 var server = http.createServer(app);
 // Pass a http.Server instance to the listen method
 var io = require('socket.io').listen(server);
-io.adapter(redis({ host: 'localhost', port: 6379 }));
+io.adapter(redis({ host: 'prodcache.s9pdko.0001.use1.cache.amazonaws.com', port: 6379 }));
 
 // The server should start listening
 server.listen(80);
@@ -51,7 +51,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 app.post("/updates", function(req, res) {
     var data = {"abs_path" : req.body.absolute_path, "data_url" : req.body.data_url}
     console.log(data)
-    io.of("/").adapter.to(req.body.connection).emit("new_data", data);
+    io.to(req.body.connection).emit("new_data", data);
     res.send({});
 });
 
@@ -120,9 +120,10 @@ app.post("/get", function(req,res){
 io.on('connection', function (socket) {
     socket.on('join_room', function (data) {
         var connection = md5(data.absolute_path + data.event_type)
-        io.of("/").adapter.remoteJoin(socket.id,connection, function(error, result){
-            console.log("joined room")
-        });
+        socket.join(connection)
+        // io.of("/").adapter.remoteJoin(socket.id,connection, function(error, result){
+        //     console.log("joined room")
+        // });
         // now store room in database so that it can access by other
     });
 });
