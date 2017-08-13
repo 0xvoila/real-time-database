@@ -16,7 +16,7 @@ myApp.service("firebaseService", function($http){
 
           return new function(){
             this.on = function(event,callback){
-              _this.onNSP.emit('on', { absolute_path: _this.reference, event_type :event});
+              _this.onNSP.emit('on', {absolute_path: _this.reference, event_type :event});
                 _this.onNSP.on("data", function(data){
                     $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
                       //_this.onNSP.emit("off",{absolute_path:_this.reference, event_type:event})
@@ -27,14 +27,14 @@ myApp.service("firebaseService", function($http){
                   })
             },
             this.once = function(event,callback){
-              _this.onceNSP.emit('once',{absolute_path:_this.reference, event_type:event});
+              _this.onceNSP.emit('on', {absolute_path: _this.reference, event_type :event});
                 _this.onceNSP.on("data", function(data){
                     $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
                       _this.onceNSP.emit("off",{absolute_path:_this.reference, event_type:event})
-                      callback(null,data.data)
+                      callback(null,data.data);
                     }, function(error){
                       callback(error)
-                    })
+                    });
                 })
             }
           }
