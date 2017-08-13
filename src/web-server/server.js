@@ -51,12 +51,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 app.post("/updates", function(req, res) {
     var data = {"abs_path" : req.body.absolute_path, "data_url" : req.body.data_url}
     io.of("/on").to(req.body.connection).emit("data", data);
-    io.of("/once").to(req.body.connection).emit("data", data);
-    var roster = io.of("/once").clients("f0cc9c592ab8317f91e25661adf0dd93")
-    for(var i=0;i<roster.length;i++){
-      console.log(roster[i].id)
-    }
-
+    //io.of("/once").to(req.body.connection).emit("data", data);
     res.send({});
 });
 
@@ -73,7 +68,7 @@ app.post("/push", function(req,res){
     var rootNode = new Node()
     rootNode.parent = null;
     rootNode.data.key = "/"
-    var json = myTree.toJson(rootNode,result)
+    var json = myTree.toJson(rootNo vde,result)
     var rootNode = new Node()
     rootNode.parent = null;
     myTree.toTree(rootNode,json["/"],[])
@@ -126,7 +121,15 @@ io.of("/on").on('connection', function (socket) {
       console.log("connection in namespace on")
         var connection = md5(data.absolute_path + data.event_type)
         socket.join(connection)
-    })
+    });
+
+    socket.on('off', function (data) {
+      console.log("switching off connection on On SPACE")
+      var connection = md5(data.absolute_path + data.event_type)
+      console.log(connection)
+      socket.leave(connection)
+    });
+
   });
 
 io.of("/once").on('connection', function (socket) {
@@ -137,7 +140,7 @@ io.of("/once").on('connection', function (socket) {
     });
 
     socket.on('off', function (data) {
-      console.log("switching off connection")
+      console.log("switching off connection in ONE SPACE")
       var connection = md5(data.absolute_path + data.event_type)
       console.log(connection)
       socket.leave(connection)
