@@ -3,6 +3,7 @@ var myApp = angular.module('myApp',[]);
 var myController = myApp.controller('myController',function($scope,firebaseService){
 
   $scope.messages = [];
+  $scope.data = ""
 
   function gup(name) {
       name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
@@ -16,6 +17,17 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
   }
 
   if(gup("type") == "get" || gup("type") == "all"){
+
+    firebaseService.database().ref("/messages").once('child_added', function(error, data){
+      if(error){
+        throw error;
+        return
+      }
+      else{
+        $scope.data= data["/"]["messages"]
+      }
+
+    });
 
     firebaseService.database().ref("/messages").on('child_added', function(error, data){
       if(error){
