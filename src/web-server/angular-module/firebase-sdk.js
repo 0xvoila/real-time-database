@@ -27,7 +27,7 @@ myApp.service("firebaseService", function($http){
             },
             this.once = function(event,callback){
               _this.onceNSP.emit('once',{absolute_path:_this.reference, event_type:event});
-                _this.onceNSP.on("data", function(){
+                _this.onceNSP.on("data", function(data){
                     $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
                       callback(null,data.data)
                       _this.onceNSP.emit("off",{absolute_path:_this.reference, event_type:event})
