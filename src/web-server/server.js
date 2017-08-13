@@ -120,7 +120,7 @@ app.post("/get", function(req,res){
 io.on('connection', function (socket) {
     socket.on('join_room', function (data) {
         var connection = md5(data.absolute_path + data.event_type)
-        io.of("/").adapter.remoteJoin(socket.io,connection, function(error, result){
+        io.of("/").adapter.remoteJoin(socket.id,connection, function(error, result){
             console.log("joined room")
         });
         // now store room in database so that it can access by other
