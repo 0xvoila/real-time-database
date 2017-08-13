@@ -52,7 +52,11 @@ app.post("/updates", function(req, res) {
     var data = {"abs_path" : req.body.absolute_path, "data_url" : req.body.data_url}
     io.of("/on").to(req.body.connection).emit("data", data);
     io.of("/once").to(req.body.connection).emit("data", data);
-    console.log(req.body.connection)
+    var roster = io.of("/once").clients("f0cc9c592ab8317f91e25661adf0dd93")
+    roster.forEach(function(socket) {
+        console.log(socket.id);
+    });
+
     res.send({});
 });
 
