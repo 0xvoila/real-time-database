@@ -10,8 +10,8 @@ var Node = require("../node.js")
 var redis = require('socket.io-redis');
 var MongoClient = require('mongodb').MongoClient;
 //var url = 'mongodb://root:2June1989!@voila-cluster-shard-00-00-45vfv.mongodb.net:27017,voila-cluster-shard-00-01-45vfv.mongodb.net:27017,voila-cluster-shard-00-02-45vfv.mongodb.net:27017/test?ssl=true&replicaSet=voila-cluster-shard-0&authSource=admin'
-//var url = 'mongodb://voila:246810aa@lamppost.2.mongolayer.com:10758,lamppost.3.mongolayer.com:10728/firebase?replicaSet=set-554218a44ec6c0c54f000fdd'
-var url = 'mongodb://root:2June1989!@hesignburg-cluster-shard-00-00-45vfv.mongodb.net:27017,hesignburg-cluster-shard-00-01-45vfv.mongodb.net:27017,hesignburg-cluster-shard-00-02-45vfv.mongodb.net:27017/test?ssl=true&replicaSet=hesignburg-cluster-shard-0&authSource=admin'
+var url = 'mongodb://voila:246810aa@lamppost.2.mongolayer.com:10758,lamppost.3.mongolayer.com:10728/firebase?replicaSet=set-554218a44ec6c0c54f000fdd'
+//var url = 'mongodb://root:2June1989!@hesignburg-cluster-shard-00-00-45vfv.mongodb.net:27017,hesignburg-cluster-shard-00-01-45vfv.mongodb.net:27017,hesignburg-cluster-shard-00-02-45vfv.mongodb.net:27017/test?ssl=true&replicaSet=hesignburg-cluster-shard-0&authSource=admin'
 
 
 var app = express();
