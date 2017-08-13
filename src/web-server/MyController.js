@@ -25,7 +25,6 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
       }
       else{
         $scope.data= data["/"]["messages"]
-        $scope.$apply()
       }
 
     });
