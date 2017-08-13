@@ -52,6 +52,17 @@ app.post("/updates", function(req, res) {
     var data = {"abs_path" : req.body.absolute_path, "data_url" : req.body.data_url}
     io.of("/on").to(req.body.connection).emit("onData", data);
     io.of("/once").to(req.body.connection).emit("onceData", data);
+    io.of('/on').adapter.clients(['f0cc9c592ab8317f91e25661adf0dd93'], (err, clients) => {
+      console.log("client in ON space")
+      console.log(clients); // an array containing socket ids in 'room1' and/or 'room2'
+
+       });
+
+    io.of('/on').adapter.clients(['f0cc9c592ab8317f91e25661adf0dd93'], (err, clients) => {
+      console.log("client in ONCE space")
+      console.log(clients); // an array containing socket ids in 'room1' and/or 'room2'
+
+    });
 
     res.send({});
 });

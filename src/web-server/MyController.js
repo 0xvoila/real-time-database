@@ -52,6 +52,6 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
 
        firebaseService.push("/messages",json);
        i++;
-     },30000);
+     },10000);
   }
 });
