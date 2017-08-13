@@ -133,6 +133,7 @@ io.of("/once").on('connection', function (socket) {
 
     socket.on('off', function (data) {
       console.log("switching off connection")
+       console.log(data.absolute_path , data.event_type)
         var connection = md5(data.absolute_path + data.event_type)
         socket.leave(connection)
     });
