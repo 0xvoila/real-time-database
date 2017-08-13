@@ -52,6 +52,7 @@ app.post("/updates", function(req, res) {
     var data = {"abs_path" : req.body.absolute_path, "data_url" : req.body.data_url}
     io.of("/on").to(req.body.connection).emit("data", data);
     io.of("/once").to(req.body.connection).emit("data", data);
+    console.log(req.body.connection)
     res.send({});
 });
 
@@ -133,8 +134,8 @@ io.of("/once").on('connection', function (socket) {
 
     socket.on('off', function (data) {
       console.log("switching off connection")
-       console.log(data.absolute_path , data.event_type)
-        var connection = md5(data.absolute_path + data.event_type)
-        socket.leave(connection)
+      var connection = md5(data.absolute_path + data.event_type)
+      console.log(connection)
+      socket.leave(connection)
     });
 });
