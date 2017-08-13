@@ -52,6 +52,7 @@ app.post("/updates", function(req, res) {
     var data = {"abs_path" : req.body.absolute_path, "data_url" : req.body.data_url}
     io.of("/on").to(req.body.connection).emit("onData", data);
     io.of("/once").to(req.body.connection).emit("onceData", data);
+
     res.send({});
 });
 
@@ -120,13 +121,14 @@ io.of("/on").on('connection', function (socket) {
     socket.on('on', function (data) {
       console.log("connection in namespace on")
         var connection = md5(data.absolute_path + data.event_type)
+        console.log("joining room with socket id" + socket.id)
         socket.join(connection)
     });
 
     socket.on('off', function (data) {
       console.log("switching off connection on On SPACE")
       var connection = md5(data.absolute_path + data.event_type)
-      console.log(connection)
+      console.log("leaving room with socket id" + socket.id)
       socket.leave(connection)
     });
 
@@ -136,13 +138,14 @@ io.of("/once").on('connection', function (socket) {
     socket.on('once', function (data) {
         console.log("connection in namespace once")
         var connection = md5(data.absolute_path + data.event_type)
+        console.log("joining room with socket id" + socket.id)
         socket.join(connection)
     });
 
     socket.on('off', function (data) {
       console.log("switching off connection in ONCE SPACE")
       var connection = md5(data.absolute_path + data.event_type)
-      console.log(connection)
+      console.log("leaving room with socket id" + socket.id)
       socket.leave(connection)
     });
 });
