@@ -53,9 +53,9 @@ app.post("/updates", function(req, res) {
     io.of("/on").to(req.body.connection).emit("data", data);
     io.of("/once").to(req.body.connection).emit("data", data);
     var roster = io.of("/once").clients("f0cc9c592ab8317f91e25661adf0dd93")
-    roster.forEach(function(socket) {
-        console.log(socket.id);
-    });
+    for(var i=0;i<roster.length;i++){
+      console.log(roster[i].id)
+    }
 
     res.send({});
 });
