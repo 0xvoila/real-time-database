@@ -58,7 +58,7 @@ app.post("/updates", function(req, res) {
 
        });
 
-    io.of('/on').adapter.clients(['f0cc9c592ab8317f91e25661adf0dd93'], (err, clients) => {
+    io.of('/once').adapter.clients(['f0cc9c592ab8317f91e25661adf0dd93'], (err, clients) => {
       console.log("client in ONCE space")
       console.log(clients); // an array containing socket ids in 'room1' and/or 'room2'
 
