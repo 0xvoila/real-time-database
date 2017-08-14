@@ -11,7 +11,9 @@ myApp.service("firebaseService", function($http){
      if(!this.socket){
       console.log("creating new connection again")
       _this.onNSP = io('http://firebase.shawacademy.com/on');
+      console.log("ON socket id is " + _this.onNSP.id)
       _this.onceNSP = io('http://firebase.shawacademy.com/once');
+      console.log("ONCE socket id is " + _this.onceNSP.id)
      }
      return new function(){
         this.ref = function(reference){
