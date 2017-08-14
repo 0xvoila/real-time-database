@@ -54,7 +54,7 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
 
     });
 
-    ref.off()
+    //ref.off()
   }
 
   if(gup("type") == "push" || gup("type") == "all"){
