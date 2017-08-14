@@ -13,9 +13,9 @@ myApp.service("firebaseService", function($http){
       _this_db.onNSP = io('http://firebase.shawacademy.com/on');
     }
     if(!this.onceNSP){
-      console.log("ON socket id is " + _this.onNSP.id)
+      console.log("ON socket id is " + _this_db.onNSP.id)
       _this_db.onceNSP = io('http://firebase.shawacademy.com/once');
-      console.log("ONCE socket id is " + _this.onceNSP.id)
+      console.log("ONCE socket id is " + _this_db.onceNSP.id)
     }
      return new function(){
         this.ref = function(reference){
