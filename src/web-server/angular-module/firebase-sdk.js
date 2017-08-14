@@ -42,6 +42,7 @@ myApp.service("firebaseService", function($http){
                   })
               })
             },
+
             this.once = function(event,callback){
               _this_ref.callback = callback
               _this_ref.isReferenceOn = true
