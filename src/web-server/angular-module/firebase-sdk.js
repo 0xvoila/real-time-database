@@ -28,7 +28,7 @@ myApp.service("firebaseService", function($http){
             var _this = this
             this.on = function(event,callback){
               _this_ref.callback = callback
-              _this_ref_isReferenceOn = true
+              _this_ref.isReferenceOn = true
               _this_db.onNSP.emit('on', {absolute_path: _this_ref.reference, event_type :event});
                 _this_db.onNSP.on("onData", function(data){
                     $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
@@ -43,7 +43,7 @@ myApp.service("firebaseService", function($http){
             },
             this.once = function(event,callback){
               _this_ref.callback = callback
-              _this_ref_isReferenceOn = true
+              _this_ref.isReferenceOn = true
               _this_db.onceNSP.emit('once', {absolute_path: _this_ref.reference, event_type :event});
                 _this_db.onceNSP.on("onceData", function(data){
                     $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
