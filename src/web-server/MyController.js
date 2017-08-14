@@ -42,6 +42,8 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
 
     });
 
+    ref.off()
+
     var ref = firebaseService.database().ref("/messages")
     ref.on('child_added', function(error, data){
       if(error){
@@ -54,7 +56,6 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
 
     });
 
-    //ref.off()
   }
 
   if(gup("type") == "push" || gup("type") == "all"){
