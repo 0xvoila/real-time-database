@@ -3,6 +3,7 @@ var myApp = angular.module('myApp',[]);
 var myController = myApp.controller('myController',function($scope,firebaseService){
 
   $scope.messages = [];
+  $scope.mymessages = [];
   $scope.myData = null
 
   function gup(name) {
@@ -48,7 +49,7 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
         return
       }
       else{
-        $scope.messages.push(data["/"]["messages"])
+        $scope.mymessages.push(data["/"]["messages"])
       }
 
     });
