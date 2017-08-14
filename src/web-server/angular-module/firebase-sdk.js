@@ -21,7 +21,7 @@ myApp.service("firebaseService", function($http){
         this.ref = function(reference){
           var _this_ref = this
           _this_ref.reference = reference
-          _this_ref.isReferencOn = false
+          _this_ref.isReferenceOn = false
           _this_ref.callback = null
 
           return new function(){
@@ -32,7 +32,7 @@ myApp.service("firebaseService", function($http){
               _this_db.onNSP.emit('on', {absolute_path: _this_ref.reference, event_type :event});
                 _this_db.onNSP.on("onData", function(data){
                     $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
-                      if(_this_ref.isReferencOn){
+                      if(_this_ref.isReferenceOn){
                         _this_ref.callback(null,data.data);
                       }
 
@@ -47,7 +47,7 @@ myApp.service("firebaseService", function($http){
               _this_db.onceNSP.emit('once', {absolute_path: _this_ref.reference, event_type :event});
                 _this_db.onceNSP.on("onceData", function(data){
                     $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
-                      if(_this_ref.isReferencOn){
+                      if(_this_ref.isReferenceOn){
                         _this.off()
                         _this_ref.callback(null,data.data);
                       }
@@ -58,7 +58,7 @@ myApp.service("firebaseService", function($http){
                 })
             },
             this.off = function(){
-              _this_ref.isReferencOn = false
+              _this_ref.isReferenceOn = false
               console.log("switching off reference")
             }
           }
