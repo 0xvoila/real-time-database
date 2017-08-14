@@ -28,7 +28,7 @@ myApp.service("firebaseService", function($http){
                   _this_ref.callback(data.data)
                 }
                 else if(event == "child_added"){
-                  _this_ref.callback(data.data)
+                  //_this_ref.callback(data.data)
                 }
                 _this_db.onNSP.emit('on', {absolute_path: _this_ref.reference, event_type :event});
                 _this_db.onNSP.on("onData", function(data){
@@ -38,6 +38,8 @@ myApp.service("firebaseService", function($http){
                       }
                     }, function(error){
                         callback(error)
+                    }).catch(function(error){
+                      console.log(error)
                     });
                   })
               })
