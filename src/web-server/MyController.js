@@ -31,7 +31,7 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
     });
 
     var ref = firebaseService.database().ref("/messages")
-    ref.on('child_added', function(error, data){
+    ref.on('value', function(error, data){
       if(error){
         throw error;
         return

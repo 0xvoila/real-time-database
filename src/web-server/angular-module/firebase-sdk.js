@@ -23,17 +23,24 @@ myApp.service("firebaseService", function($http){
             this.on = function(event,callback){
               _this_ref.callback = callback
               _this_ref.isReferenceOn = true
-              _this_db.onNSP.emit('on', {absolute_path: _this_ref.reference, event_type :event});
+              $http.post('http://firebase.shawacademy.com/get',  {data_url:_this_ref.reference}).then(function(data){
+                if(event == "value"){
+                  _this_ref.callback(value)
+                }
+                else if(event == "child_added"){
+                  _this_ref.callback(value)
+                }
+                _this_db.onNSP.emit('on', {absolute_path: _this_ref.reference, event_type :event});
                 _this_db.onNSP.on("onData", function(data){
                     $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
                       if(_this_ref.isReferenceOn){
                         _this_ref.callback(null,data.data);
                       }
-
                     }, function(error){
                         callback(error)
                     });
                   })
+              })
             },
             this.once = function(event,callback){
               _this_ref.callback = callback
