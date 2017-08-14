@@ -129,6 +129,7 @@ app.post("/get", function(req,res){
 
 // Handle connection
 io.of("/on").on('connection', function (socket) {
+  console.log("got a ONE connection")
     socket.on('on', function (data) {
       console.log("connection in namespace on")
         var connection = md5(data.absolute_path + data.event_type)
