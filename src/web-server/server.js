@@ -153,10 +153,10 @@ io.of("/once").on('connection', function (socket) {
         socket.join(connection)
     });
 
-    socket.on('off', function (data) {
-      console.log("switching off connection in ONCE SPACE")
-      var connection = md5(data.absolute_path + data.event_type)
-      console.log("leaving room with socket id" + socket.id)
-      socket.leave(connection)
-    });
+    // socket.on('off', function (data) {
+    //   console.log("switching off connection in ONCE SPACE")
+    //   var connection = md5(data.absolute_path + data.event_type)
+    //   console.log("leaving room with socket id" + socket.id)
+    //   socket.leave(connection)
+    // });
 });
