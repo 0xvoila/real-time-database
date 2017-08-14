@@ -42,6 +42,8 @@ myApp.service("firebaseService", function($http){
                       console.log(error)
                     });
                   })
+              }).catch(function(error){
+                  console.log(error)
               })
             },
 
