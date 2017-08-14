@@ -146,6 +146,7 @@ io.of("/on").on('connection', function (socket) {
   });
 
 io.of("/once").on('connection', function (socket) {
+  console.log("got a once connection")
     socket.on('once', function (data) {
         console.log("connection in namespace once")
         var connection = md5(data.absolute_path + data.event_type)
