@@ -43,7 +43,7 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
 
   if(gup("type") == "push" || gup("type") == "all"){
     var i=0;
-    //setInterval(function(){
+    setInterval(function(){
        json = {
             "chat_room_id" : "goog",
             "body" : "amit",
@@ -52,6 +52,6 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
 
        firebaseService.push("/messages",json);
        i++;
-     //},10000);
+     },10000);
   }
 });
