@@ -9,6 +9,7 @@ myApp.service("firebaseService", function($http){
 
      var _this = this
      if(!this.socket){
+      console.log("creating new connection again")
       _this.onNSP = io('http://firebase.shawacademy.com/on');
       _this.onceNSP = io('http://firebase.shawacademy.com/once');
      }
