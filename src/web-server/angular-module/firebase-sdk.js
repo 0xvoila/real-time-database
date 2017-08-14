@@ -25,10 +25,10 @@ myApp.service("firebaseService", function($http){
               _this_ref.isReferenceOn = true
               $http.post('http://firebase.shawacademy.com/get',  {data_url:_this_ref.reference}).then(function(data){
                 if(event == "value"){
-                  _this_ref.callback(data.data)
+                  _this_ref.callback(null,data.data)
                 }
                 else if(event == "child_added"){
-                  //_this_ref.callback(data.data)
+                  //_this_ref.callback(null,data.data)
                 }
                 _this_db.onNSP.emit('on', {absolute_path: _this_ref.reference, event_type :event});
                 _this_db.onNSP.on("onData", function(data){
