@@ -3,7 +3,6 @@ var myApp = angular.module('myApp');
 myApp.service("firebaseService", function($http){
 
   this.onNSP = null;
-  this.onceNSP = null;
 
   this.database = function(database){
 
@@ -11,11 +10,6 @@ myApp.service("firebaseService", function($http){
      if(!this.onNSP){
       console.log("creating new connection again")
       _this_db.onNSP = io('http://firebase.shawacademy.com/on');
-    }
-    if(!this.onceNSP){
-      console.log("ON socket id is " + _this_db.onNSP.id)
-      _this_db.onceNSP = io('http://firebase.shawacademy.com/once');
-      console.log("ONCE socket id is " + _this_db.onceNSP.id)
     }
      return new function(){
         this.ref = function(reference){
