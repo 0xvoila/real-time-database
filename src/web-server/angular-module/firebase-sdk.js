@@ -8,17 +8,18 @@ myApp.service("firebaseService", function($http){
   this.database = function(database){
 
      var _this = this
-     if(!this.socket){
+     if(!this.onNSP){
       console.log("creating new connection again")
       _this.onNSP = io('http://firebase.shawacademy.com/on');
+    }
+    if(!this.onceNSP){
       console.log("ON socket id is " + _this.onNSP.id)
       _this.onceNSP = io('http://firebase.shawacademy.com/once');
       console.log("ONCE socket id is " + _this.onceNSP.id)
-     }
+    }
      return new function(){
         this.ref = function(reference){
           _this.reference = reference
-
           return new function(){
             this.on = function(event,callback){
               _this.onNSP.emit('on', {absolute_path: _this.reference, event_type :event});
