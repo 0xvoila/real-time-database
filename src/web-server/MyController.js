@@ -37,8 +37,6 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
       }
       else{
         $scope.messages.push(data["/"]["messages"])
-        ref.off()
-
       }
 
     });

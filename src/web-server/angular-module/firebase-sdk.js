@@ -47,8 +47,8 @@ myApp.service("firebaseService", function($http){
               _this_db.onceNSP.emit('once', {absolute_path: _this_ref.reference, event_type :event});
                 _this_db.onceNSP.on("onceData", function(data){
                     $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
-                      _this.off()
                       if(_this_ref.isReferencOn){
+                        _this.off()
                         _this_ref.callback(null,data.data);
                       }
 
