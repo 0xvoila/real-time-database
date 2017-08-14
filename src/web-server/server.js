@@ -32,7 +32,6 @@ MongoClient.connect(url,options,function(error,connection){
   else{
     mongodb = connection
   }
-
 })
 
 
@@ -143,7 +142,6 @@ io.of("/on").on('connection', function (socket) {
       console.log("leaving room with socket id" + socket.id)
       socket.leave(connection)
     });
-
   });
 
 io.of("/once").on('connection', function (socket) {

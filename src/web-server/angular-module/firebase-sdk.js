@@ -7,41 +7,59 @@ myApp.service("firebaseService", function($http){
 
   this.database = function(database){
 
-     var _this = this
+     var _this_db = this
      if(!this.onNSP){
       console.log("creating new connection again")
-      _this.onNSP = io('http://firebase.shawacademy.com/on');
+      _this_db.onNSP = io('http://firebase.shawacademy.com/on');
     }
     if(!this.onceNSP){
       console.log("ON socket id is " + _this.onNSP.id)
-      _this.onceNSP = io('http://firebase.shawacademy.com/once');
+      _this_db.onceNSP = io('http://firebase.shawacademy.com/once');
       console.log("ONCE socket id is " + _this.onceNSP.id)
     }
      return new function(){
         this.ref = function(reference){
-          _this.reference = reference
+          var _this_ref = this
+          _this_ref.reference = reference
+          _this_ref.isReferencOn = false
+          _this_ref.callback = null
+
           return new function(){
             this.on = function(event,callback){
-              _this.onNSP.emit('on', {absolute_path: _this.reference, event_type :event});
-                _this.onNSP.on("onData", function(data){
+              _this_ref.callback = callback
+              _this_ref_isReferenceOn = true
+              _this_db.onNSP.emit('on', {absolute_path: _this_ref.reference, event_type :event});
+                _this_db.onNSP.on("onData", function(data){
                     $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
-                      //_this.onNSP.emit("off",{absolute_path:_this.reference, event_type:event})
-                      callback(null,data.data);
+                      if(_this_ref.isReferencOn){
+                        _this_ref.callback(null,data.data);
+                      }
+
                     }, function(error){
                         callback(error)
                     });
                   })
             },
             this.once = function(event,callback){
-              _this.onceNSP.emit('once', {absolute_path: _this.reference, event_type :event});
-                _this.onceNSP.on("onceData", function(data){
+              _this_ref.callback = callback
+              _this_ref_isReferenceOn = true
+              _this_db.onceNSP.emit('once', {absolute_path: _this_ref.reference, event_type :event});
+                _this_db.onceNSP.on("onceData", function(data){
                     $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
-                      _this.onceNSP.emit("off",{absolute_path:_this.reference, event_type:event})
-                      callback(null,data.data);
+                      _this_ref.off()
+                      if(_this_ref.isReferencOn){
+                        _this_ref.callback(null,data.data);
+                      }
+
                     }, function(error){
                       callback(error)
                     });
                 })
+            },
+
+            this.off = function(){
+              _this_ref.isReferencOn = false
+              console.log("switching off reference")
             }
           }
         }
