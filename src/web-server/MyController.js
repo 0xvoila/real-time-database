@@ -29,16 +29,16 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
 
     });
 
-    // firebaseService.database().ref("/messages").on('child_added', function(error, data){
-    //   if(error){
-    //     throw error;
-    //     return
-    //   }
-    //   else{
-    //     $scope.messages.push(data["/"]["messages"])
-    //   }
+    firebaseService.database().ref("/messages").on('child_added', function(error, data){
+      if(error){
+        throw error;
+        return
+      }
+      else{
+        $scope.messages.push(data["/"]["messages"])
+      }
 
-    // });
+    });
   }
 
   if(gup("type") == "push" || gup("type") == "all"){

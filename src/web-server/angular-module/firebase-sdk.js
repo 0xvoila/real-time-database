@@ -2,7 +2,9 @@ var myApp = angular.module('myApp');
 
 myApp.service("firebaseService", function($http){
 
-  this.socket = null;
+  this.onNSP = null;
+  this.onceNSP = null;
+
   this.database = function(database){
 
      var _this = this
