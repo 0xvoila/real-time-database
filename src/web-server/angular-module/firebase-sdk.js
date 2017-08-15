@@ -78,6 +78,7 @@ myApp.service("firebaseService", function($http){
 
                 var array = absolutePath.split("/")
                 if(array.length == 1 ){
+                  var ele = array.splice(0,1)
                   return json[ele]
                 }
                 else{
