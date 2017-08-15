@@ -77,15 +77,16 @@ myApp.service("firebaseService", function($http){
             this.getDataFromRelativePosition = function(absolutePath, json){
 
                 var array = absolutePath.split("/")
-                if(array.length == 1 ){
-                  var ele = array.splice(0,1)
-                  return json[ele]
+                var myJson = null
+                for(var i=0;i<array.length;i++){
+                  if(i == 0){
+                    array[i] = "/"
+                  }
+                  myJson = json[arrar[i]]
+                  json = myJson
                 }
-                else{
-                  var ele = array.splice(0,1)
-                  ele = ((ele == "")?"/":ele)
-                  this.getDataFromRelativePosition(array.join("/"),json[ele])
-                }
+
+                return myJson
             } //
           }
         }
