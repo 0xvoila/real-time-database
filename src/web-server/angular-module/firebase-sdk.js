@@ -3,7 +3,6 @@ var myApp = angular.module('myApp');
 myApp.service("firebaseService", function($http){
 
   this.onNSP = null;
-  var _this = this
   this.database = function(database){
 
      var _this_db = this
@@ -73,6 +72,20 @@ myApp.service("firebaseService", function($http){
             this.off = function(){
               _this_ref.isReferenceOn = false
               console.log("switching off reference")
+            },
+
+            this.getDataFromRelativePosition = function(absolutePath, json){
+
+                var array = absolutePath.split()
+                var json = null;
+                for(var i=0;i<array.length;i++){
+                  if(i == 0){
+                    array[i]= "/"
+                  }
+                  json = json[array[i]]
+                }
+
+                return json
             }
           }
         }
@@ -92,20 +105,6 @@ myApp.service("firebaseService", function($http){
   this.push = function(absolutePath, data, callback){
     var transportObj = {reference:absolutePath, body:data};
     $http.post('http://firebase.shawacademy.com/push',  transportObj);
-  },
-
-  this.getDataFromRelativePosition = function(absolutePath, json){
-
-    var array = absolutePath.split()
-    var json = null;
-    for(var i=0;i<array.length;i++){
-      if(i == 0){
-        array[i]= "/"
-      }
-      json = json[array[i]]
-    }
-
-    return json
   }
 
 })
