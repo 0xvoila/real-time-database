@@ -30,31 +30,31 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
 
     // });
 
-    var ref = firebaseService.database().ref("/messages")
-    ref.on('value', function(error, data){
-      if(error){
-        throw error;
-        return
-      }
-      else{
-        $scope.messages.push(data)
-      }
-
-    });
-
-    //ref.off()
-
     // var ref = firebaseService.database().ref("/messages")
-    // ref.on('child_added', function(error, data){
+    // ref.on('value', function(error, data){
     //   if(error){
     //     throw error;
     //     return
     //   }
     //   else{
-    //     $scope.mymessages.push(data["/"]["messages"])
+    //     $scope.messages.push(data)
     //   }
 
     // });
+
+    //ref.off()
+
+    var ref = firebaseService.database().ref("/messages")
+    ref.on('child_added', function(error, data){
+      if(error){
+        throw error;
+        return
+      }
+      else{
+        $scope.mymessages.push(data["/"]["messages"])
+      }
+
+    });
 
   }
 
