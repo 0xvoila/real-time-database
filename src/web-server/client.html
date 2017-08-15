@@ -53,7 +53,7 @@
                         <form ng-submit="submitChat('webinarChatInputMobile')" class="chat-form">
                             <input mg-model="thingToSay" id="webinarChatInput" type="text" class="form-control input-sm" placeholder="Type your message here..." />
                             <span class="input-group-btn">
-                                <button class="btn btn-warning btn-sm" id="btn-chat">
+                                <button class="btn btn-warning btn-sm" id="btn-chat" ng-click="submitChat('webinarChatInput')">
                                     Send</button>
                             </span>
 
