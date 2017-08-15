@@ -1,26 +1,71 @@
-<!DOCTYPE html>
-<html lang="en-US">
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-<script src="./MyController.js"></script>
-<script src="./angular-module/firebase-sdk.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+<html>
+<head>
+    <title>
+            Live Chat Demo
+    </title>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/core.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <link rel="stylesheet" href="./css.css"></link>
+    <script src="./MyController.js"></script>
+    <script src="./angular-module/firebase-sdk.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+</head>
 <body>
 
-<div ng-app="myApp" ng-controller="myController">
-  <div id="chatBoxId" style="height: 100px;border-color: aquamarine;border-style: solid;width: 120px;">
-    <div ng-repeat="(key,message) in messages">
-      <div ng-repeat = "(key,value) in message">
-        {{value.body}}
-      </div>
+<div class="container"  ng-app="myApp" ng-controller="myController">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="panel panel-primary">
+                <div class="panel-heading" id="accordion">
+                    <span class="glyphicon glyphicon-comment"></span> Chat
+                    <div class="btn-group pull-right">
+                        <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                            <span class="glyphicon glyphicon-chevron-down"></span>
+                        </a>
+                    </div>
+                </div>
+            <div class="panel-collapse collapse" id="collapseOne">
+                <div class="panel-body">
+                    <ul class="chat">
+                        <div ng-repeat="(key,message) in messages" >
+                             <li ng-repeat = "(key,value) in message" class="left clearfix"><span class="chat-img pull-left">
+                                <img src="http://placehold.it/50/55C1E7/fff&text=U" alt="User Avatar" class="img-circle" />
+
+                                </span>
+                                <div class="chat-body clearfix">
+                                    <div class="header">
+                                        <strong class="primary-font">Amit Aggarwal</strong> <small class="pull-right text-muted">
+                                            <span class="glyphicon glyphicon-time"></span>12 mins ago</small>
+                                    </div>
+                                    <p>
+                                        value.body
+                                    </p>
+                                </div>
+                            </li>
+                        </div>
+                    </ul>
+                </div>
+                <div class="panel-footer">
+                    <div class="input-group">
+                        <form ng-submit="submitChat('webinarChatInputMobile')" class="chat-form">
+                            <input mg-model="thingToSay" id="webinarChatInput" type="text" class="form-control input-sm" placeholder="Type your message here..." />
+                            <span class="input-group-btn">
+                                <button class="btn btn-warning btn-sm" id="btn-chat">
+                                    Send</button>
+                            </span>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
     </div>
-  </div>
-  <form ng-submit="submitChat('webinarChatInputMobile')" class="chat-form">
-     <input ng-model="thingToSay" maxlength="640" id="webinarChatInput">
-    <div ng-click="submitChat('webinarChatInput')">
-    </div>
-  </form>
 </div>
+
 
 </body>
 </html>
