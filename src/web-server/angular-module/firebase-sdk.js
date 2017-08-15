@@ -80,6 +80,9 @@ myApp.service("firebaseService", function($http){
 
             this.getDataFromRelativePosition = function(absolutePath, json){
 
+                if(angular.equals(json, {})){
+                  return json
+                }
                 var array = absolutePath.split("/")
                 var myJson = null
                 for(var i=0;i<array.length;i++){
