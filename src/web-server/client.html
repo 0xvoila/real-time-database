@@ -13,8 +13,8 @@
       {{message.body}}
     </div>
   </div>
-  <form ng-submit="submitChat('webinarChatInputMobile')" ng-if="webinarStatus.state == 'running' || webinarStatus.state == 'outage'" class="chat-form">
-     <input ng-model="thingToSay" placeholder="{{'Type here to chat' | translate}}" maxlength="640" id="webinarChatInput">
+  <form ng-submit="submitChat('webinarChatInputMobile')" class="chat-form">
+     <input ng-model="thingToSay" maxlength="640" id="webinarChatInput">
     <div ng-click="submitChat('webinarChatInput')">
     </div>
   </form>

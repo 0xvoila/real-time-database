@@ -6,6 +6,7 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
   $scope.thingToSay = ""
 
   $scope.submitChat = function(){
-    console.log("chat is " + thingToSay)
+    console.log("chat is " + $scope.thingToSay)
+    $scope.thingToSay = ""
   }
 });
