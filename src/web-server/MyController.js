@@ -46,6 +46,7 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
 
     var ref = firebaseService.database().ref("/messages")
     ref.on('child_added', function(error, data){
+      console.log("caling callback again")
       if(error){
         throw error;
         return
