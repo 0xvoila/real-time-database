@@ -37,8 +37,9 @@ myApp.service("firebaseService", function($http){
                 _this_db.onNSP.emit('on', {absolute_path: _this_ref.reference, event_type :event});
                 _this_db.onNSP.on("onData", function(data){
                     $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
+                      var jsonData = _this.getDataFromRelativePosition(_this_ref.reference,data.data)
                       if(_this_ref.isReferenceOn){
-                        _this_ref.callback(null,data.data);
+                        _this_ref.callback(null,jsonData);
                       }
                     }, function(error){
                         callback(error)
@@ -59,9 +60,10 @@ myApp.service("firebaseService", function($http){
               _this_db.onNSP.emit('on', {absolute_path: _this_ref.reference, event_type :event});
                 _this_db.onNSP.on("onData", function(data){
                     $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
+                      var jsonData = _this.getDataFromRelativePosition(_this_ref.reference,data.data)
                       if(_this_ref.isReferenceOn){
                         _this.off()
-                        _this_ref.callback(null,data.data);
+                        _this_ref.callback(null,jsonData);
                       }
 
                     }, function(error){
