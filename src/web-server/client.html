@@ -10,7 +10,9 @@
 <div ng-app="myApp" ng-controller="myController">
   <div id="chatBoxId" style="height: 100px;border-color: aquamarine;border-style: solid;width: 120px;">
     <div ng-repeat="(key,message) in messages">
-      {{message.body}}
+      <div ng-repeat = "(key,value) in message">
+        {{value.body}}
+      </div>
     </div>
   </div>
   <form ng-submit="submitChat('webinarChatInputMobile')" class="chat-form">
