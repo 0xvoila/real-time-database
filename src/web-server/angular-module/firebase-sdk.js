@@ -29,8 +29,8 @@ myApp.service("firebaseService", function($http){
                 }
                 else if(event == "child_added"){
                   var jsonData = _this.getDataFromRelativePosition(_this_ref.reference,data.data)
-                  for(var i=0; i<jsonData.length;i++){
-                    _this_ref.callback(null,jsonData[i])
+                  for(var key in jsonData){
+                    _this_ref.callback(null,{key,jsonData[key]})
                   }
 
                 }
