@@ -82,6 +82,7 @@ myApp.service("firebaseService", function($http){
                 }
                 else{
                   var ele = array.splice(0,1)
+                  ele = ((ele == "")?"/":ele)
                   this.getDataFromRelativePosition(array.join("/"),json[ele])
                 }
             } //
