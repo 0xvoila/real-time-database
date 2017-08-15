@@ -3,7 +3,7 @@ var myApp = angular.module('myApp');
 myApp.service("firebaseService", function($http){
 
   this.onNSP = null;
-
+  var _this = this
   this.database = function(database){
 
      var _this_db = this
@@ -25,10 +25,15 @@ myApp.service("firebaseService", function($http){
               _this_ref.isReferenceOn = true
               $http.post('http://firebase.shawacademy.com/get',  {data_url:_this_ref.reference}).then(function(data){
                 if(event == "value"){
-                  _this_ref.callback(null,data.data)
+                  var jsonData = getDataFromRelativePosition(_this_ref.reference,data.data)
+                  _this_ref.callback(null,jsonData)
                 }
                 else if(event == "child_added"){
-                  //_this_ref.callback(null,data.data)
+                  // var jsonData = getDataFromRelativePosition(_this_ref.reference,data.data)
+                  // for(var key as jsonData){
+                  //   _this_ref.callback(null,jsonData[key])
+                  // }
+
                 }
                 _this_db.onNSP.emit('on', {absolute_path: _this_ref.reference, event_type :event});
                 _this_db.onNSP.on("onData", function(data){
@@ -72,7 +77,7 @@ myApp.service("firebaseService", function($http){
           }
         }
      }
-  }
+  },
 
   this.set = function(absolutePath,data,callback){
     var transportObj = {reference:absolutePath, body:data};
@@ -87,6 +92,20 @@ myApp.service("firebaseService", function($http){
   this.push = function(absolutePath, data, callback){
     var transportObj = {reference:absolutePath, body:data};
     $http.post('http://firebase.shawacademy.com/push',  transportObj);
+  },
+
+  var getDataFromRelativePosition = function(absolutePath, json){
+
+    var array = absolutePath.split()
+    var json = null;
+    for(var i=0;i<array.length;i++){
+      if(i == 0){
+        array[i]= "/"
+      }
+      json = json[array[i]]
+    }
+
+    return json
   }
 
 })
