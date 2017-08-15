@@ -82,7 +82,7 @@ myApp.service("firebaseService", function($http){
                   if(i == 0){
                     array[i] = "/"
                   }
-                  myJson = json[arrar[i]]
+                  myJson = json[array[i]]
                   json = myJson
                 }
 
