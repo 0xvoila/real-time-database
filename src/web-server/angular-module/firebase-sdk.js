@@ -25,11 +25,11 @@ myApp.service("firebaseService", function($http){
               _this_ref.isReferenceOn = true
               $http.post('http://firebase.shawacademy.com/get',  {data_url:_this_ref.reference}).then(function(data){
                 if(event == "value"){
-                  var jsonData = getDataFromRelativePosition(_this_ref.reference,data.data)
+                  var jsonData = _this.getDataFromRelativePosition(_this_ref.reference,data.data)
                   _this_ref.callback(null,jsonData)
                 }
                 else if(event == "child_added"){
-                  // var jsonData = getDataFromRelativePosition(_this_ref.reference,data.data)
+                  // var jsonData = _this.getDataFromRelativePosition(_this_ref.reference,data.data)
                   // for(var key as jsonData){
                   //   _this_ref.callback(null,jsonData[key])
                   // }
@@ -94,7 +94,7 @@ myApp.service("firebaseService", function($http){
     $http.post('http://firebase.shawacademy.com/push',  transportObj);
   },
 
-  var getDataFromRelativePosition = function(absolutePath, json){
+  this.getDataFromRelativePosition = function(absolutePath, json){
 
     var array = absolutePath.split()
     var json = null;
