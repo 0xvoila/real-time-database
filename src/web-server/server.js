@@ -48,6 +48,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 app.post("/updates", function(req, res) {
+    console.log("real time updates");
     var data = {"abs_path" : req.body.absolute_path, "data_url" : req.body.data_url}
     io.of("/on").to(req.body.connection).emit("onData", data);
     res.send({});
