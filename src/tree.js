@@ -240,7 +240,7 @@ var Tree = function(){
 
         }, function(callback){
           // Now update parents with firebase events
-          var events = {"self":["value"], "parent":["child_added","value"], "grandParents" :["value","child_updated"]}
+          var events = {"self":["value"], "parent":["child_added","value"], "grandParents" :["value","child_changed"]}
 
           _this.setEvents(node,events,callback)
 

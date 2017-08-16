@@ -53,6 +53,75 @@ app.post("/updates", function(req, res) {
     res.send({});
 });
 
+app.post("/set", function(req,res){
+
+    var firebaseReference = req.body.reference;
+    var body = req.body.body
+
+    var result = helperObj.parseJsonToFindAbsolutePath(firebaseReference,body)
+
+    var myTree = new Tree()
+    var rootNode = new Node()
+    rootNode.parent = null;
+    rootNode.data.key = "/"
+    var json = myTree.toJson(rootNode,result)
+    var rootNode = new Node()
+    rootNode.parent = null;
+    myTree.toTree(rootNode,json["/"],[])
+
+    // delete subtree at reference
+    async.series([function(callback){
+      database.removeSubTree(mongodb,firebaseReference,callback)
+      },
+      function(callback){
+        myTree.depthFirstProcessing(mongodb,rootNode, callback);
+      }, function(callback){
+        myTree.breadthFirstEventTrigger(rootNode,callback)
+      }],
+      function(error, result){
+        if(error) {
+          console.log("error" + error)
+          return
+        }
+        else {
+          res.send(result)
+        }
+      })
+})
+
+app.post("/update", function(req,res){
+
+    var firebaseReference = req.body.reference;
+    var body = req.body.body
+
+    var result = helperObj.parseJsonToFindAbsolutePath(firebaseReference,body)
+
+    var myTree = new Tree()
+    var rootNode = new Node()
+    rootNode.parent = null;
+    rootNode.data.key = "/"
+    var json = myTree.toJson(rootNode,result)
+    var rootNode = new Node()
+    rootNode.parent = null;
+    myTree.toTree(rootNode,json["/"],[])
+
+    // delete subtree at reference
+    async.series([function(callback){
+        myTree.depthFirstProcessing(mongodb,rootNode, callback);
+      }, function(callback){
+        myTree.breadthFirstEventTrigger(rootNode,callback)
+      }],
+      function(error, result){
+        if(error) {
+          console.log("error" + error)
+          return
+        }
+        else {
+          res.send(result)
+        }
+      })
+})
+
 app.post("/push", function(req,res){
 
     var helperObj = helper();
