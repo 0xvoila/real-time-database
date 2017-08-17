@@ -59,6 +59,7 @@ app.post("/set", function(req,res){
     var firebaseReference = req.body.reference;
     var body = req.body.body
 
+    var helperObj = helper();
     var result = helperObj.parseJsonToFindAbsolutePath(firebaseReference,body)
 
     var myTree = new Tree()
@@ -95,6 +96,7 @@ app.post("/update", function(req,res){
     var firebaseReference = req.body.reference;
     var body = req.body.body
 
+    var helperObj = helper();
     var result = helperObj.parseJsonToFindAbsolutePath(firebaseReference,body)
 
     var myTree = new Tree()
