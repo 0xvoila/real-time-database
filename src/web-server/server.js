@@ -35,6 +35,12 @@ MongoClient.connect(url,options,function(error,connection){
 })
 
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 // Register the index route of your app that returns the HTML file
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
