@@ -12,7 +12,7 @@ var myController = myApp.controller('myController',function($scope,firebaseServi
     $scope.thingToSay = ""
   }
 
-  firebaseService.database().ref("/594b61f0eb83efac8a351e79/chat/579f25faa826cbcf5642bfee/messages").on("child_changed", function(error,data){
+  firebaseService.database().ref("/messages").on("child_changed", function(error,data){
     $scope.messages.push(data)
   })
 
