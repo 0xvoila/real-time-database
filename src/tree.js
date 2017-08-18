@@ -201,7 +201,7 @@ var Tree = function(){
     }
 
 
-    if(eventJson.grandParents && parentNode.parent){
+    if(eventJson.grandParents && parentNode && parentNode.parent){
       var grandParentNode = parentNode.parent
       var skipEvent = false
       while(grandParentNode != null){
