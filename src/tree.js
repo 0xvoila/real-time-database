@@ -155,8 +155,9 @@ var Tree = function(){
       }
     }
 
-    var parentNode = node.parent
-    if(eventJson.parent && parentNode){
+
+    if(eventJson.parent && node.parent){
+      var parentNode = node.parent
       var skipEvent = false
       for(var i=0;i<eventJson.parent.length;i++){
         if(eventJson.parent[i] == 'child_added' || eventJson.parent[i] == "child_changed" || eventJson.parent[i] == "child_removed"){
@@ -199,8 +200,9 @@ var Tree = function(){
       }
     }
 
-    var grandParentNode = parentNode.parent
-    if(eventJson.grandParents && grandParentNode){
+
+    if(eventJson.grandParents && parentNode.parent){
+      var grandParentNode = parentNode.parent
       var skipEvent = false
       while(grandParentNode != null){
         for(var i=0;i<eventJson.grandParents.length;i++){
