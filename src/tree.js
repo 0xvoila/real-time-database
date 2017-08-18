@@ -157,6 +157,7 @@ var Tree = function(){
 
     var parentNode = node.parent
     if(eventJson.parent && parentNode){
+      var skipEvent = false
       for(var i=0;i<eventJson.parent.length;i++){
         if(eventJson.parent[i] == 'child_added' || eventJson.parent[i] == "child_changed" || eventJson.parent[i] == "child_removed"){
           var event = eventJson.parent[i]
@@ -173,8 +174,21 @@ var Tree = function(){
             }
           }
 
-          var eventHash = md5(parentNode.data.key + event)
-          parentNode.events[event] = {data_url:node.data.key ,event:event, connection:eventHash}
+          else if (event == "child_removed" || event == "child_changed"){
+            // Check if node events already have child_added, if yes then skip these events
+            var parentEvents = parentNode.events;
+            for(key in parentEvents){
+              if(key == "child_added"){
+                skipEvent = true
+              }
+            }
+          }
+
+          if(!skipEvent){
+            var eventHash = md5(parentNode.data.key + event)
+            parentNode.events[event] = {data_url:node.data.key ,event:event, connection:eventHash}
+          }
+
         }
         else {
           var event = eventJson.parent[i]
@@ -186,6 +200,7 @@ var Tree = function(){
     }
 
     if(parentNode && parentNode.parent){
+      var skipEvent = false
       var grandParent = parentNode.parent
       while(grandParent != null){
         for(var i=0;i<eventJson.length;i++){
@@ -201,8 +216,20 @@ var Tree = function(){
             }
           }
 
-          var eventHash = md5(grandParent.data.key + event)
-          grandParent.events[event] = {data_url:grandParent.data.key,event:event, connection:eventHash}
+          else if (event == "child_removed" || event == "child_changed"){
+            // Check if node events already have child_added, if yes then skip these events
+            var grandParentEvents = grandParent.events;
+            for(key in grandParentEvents){
+              if(key == "child_added"){
+                skipEvent = true
+              }
+            }
+          }
+
+          if(!skipEvent){
+            var eventHash = md5(grandParent.data.key + event)
+            grandParent.events[event] = {data_url:grandParent.data.key,event:event, connection:eventHash}
+          }
         }
         grandParent = grandParent.parent;
       }
