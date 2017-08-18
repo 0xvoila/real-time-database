@@ -230,7 +230,7 @@ var Tree = function(){
 
           if(!skipEvent){
             var eventHash = md5(grandParentNode.data.key + event)
-            grandParentNode.events[event] = {data_url:grandParent.data.key,event:event, connection:eventHash}
+            grandParentNode.events[event] = {data_url:grandParentNode.data.key,event:event, connection:eventHash}
           }
         }
         grandParentNode = grandParentNode.parent;
