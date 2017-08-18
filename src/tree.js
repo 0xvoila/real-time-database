@@ -151,7 +151,7 @@ var Tree = function(){
       for(var i=0;i<eventJson.self.length;i++){
         var event = eventJson.self[i]
         var eventHash = md5(node.data.key + event)
-        node.events[eventHash] = {data_url : node.data.key,event:event}
+        node.events[event] = {data_url : node.data.key,event:event,connection:eventHash}
       }
     }
 
@@ -160,13 +160,26 @@ var Tree = function(){
       for(var i=0;i<eventJson.parent.length;i++){
         if(eventJson.parent[i] == 'child_added' || eventJson.parent[i] == "child_changed" || eventJson.parent[i] == "child_removed"){
           var event = eventJson.parent[i]
+
+          // Remember, if event to be added is child_added then remove any child_changed or child_removed event already exists.
+          // This case is more relevant to grandParent
+          if(event == "child_added"){
+            // remove child_updated and child_removed from grandParent node
+            var parentEvents = parentNode.events;
+            for(key in parentEvents){
+              if(key == "child_changed" || key == "child_removed"){
+                delete parentEvents[key]
+              }
+            }
+          }
+
           var eventHash = md5(parentNode.data.key + event)
-          parentNode.events[eventHash] = {data_url:node.data.key ,event:event}
+          parentNode.events[event] = {data_url:node.data.key ,event:event, connection:eventHash}
         }
         else {
           var event = eventJson.parent[i]
           var eventHash = md5(parentNode.data.key + event)
-          parentNode.events[eventHash] = {data_url:parentNode.data.key, event:event}
+          parentNode.events[event] = {data_url:parentNode.data.key, event:event, connection:eventHash}
         }
 
       }
@@ -177,8 +190,19 @@ var Tree = function(){
       while(grandParent != null){
         for(var i=0;i<eventJson.length;i++){
           var event = eventJson.grandParent[i]
+
+          if(event == "child_added"){
+            // remove child_updated and child_removed from grandParent node
+            var grandParentEvents = grandParent.events;
+            for(key in grandParentEvents){
+              if(key == "child_changed" || key == "child_removed"){
+                delete grandParentEvents[key]
+              }
+            }
+          }
+
           var eventHash = md5(grandParent.data.key + event)
-          grandParent.events[eventHash] = {data_url:grandParent.data.key,event:event}
+          grandParent.events[event] = {data_url:grandParent.data.key,event:event, connection:eventHash}
         }
         grandParent = grandParent.parent;
       }
@@ -214,6 +238,7 @@ var Tree = function(){
 
     }, function(result,callback){
       if(result){
+
         // it means it exists then do upate and trigger events
         async.series([function(callback){
           database.updateNode(dbConnection,{absolute_path:node.data.key},{absolute_path:node.data.key, value:node.data.value}, callback)
@@ -302,8 +327,8 @@ var Tree = function(){
   this.breadthFirstEventTrigger = function(node, _callback){
 
     async.each(node.children, function(child,callback){
-      async.eachOf(child.events, function(item,hashKey,callback){
-        var data = {absolute_path:child.data.key , data_url : item.data_url, event:item.event, connection:hashKey}
+      async.eachOf(child.events, function(item,event,callback){
+        var data = {absolute_path:child.data.key , data_url : item.data_url, event:event, connection:item.connection}
         helperObj.postUpdates(data,callback)
       },function(error, result){
         if(error) throw error
