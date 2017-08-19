@@ -30,10 +30,13 @@ var database = (function(){
   }
 
   this.addNode = function(connection,document,_callback){
+    document["created_timestamp"] = new Date().getTime();
+    document["updated_timestamp"] = new Date().getTime();
     connection.collection("test").insertOne(document, _callback)
   }
 
   this.updateNode = function(connection,query,document,_callback){
+    document["updated_timestamp"] = new Date().getTime();
     connection.collection("test").update(query, document, _callback)
   }
 
