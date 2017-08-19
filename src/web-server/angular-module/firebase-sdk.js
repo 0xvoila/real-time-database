@@ -8,7 +8,7 @@ myApp.service("firebaseService", function($http,md5){
      var _this_db = this
      if(!this.onNSP){
       console.log("creating new connection again")
-      _this_db.onNSP = io('http://firebase.shawacademy.com/on');
+      _this_db.onNSP = io('https://firebase.shawacademy.com/on');
     }
      return new function(){
         this.ref = function(reference){
