@@ -22,7 +22,7 @@ myApp.service("firebaseService", function($http,md5){
             this.on = function(event,callback){
               _this_ref.callback = callback
               _this_ref.isReferenceOn = true
-              $http.post('http://firebase.shawacademy.com/get',  {data_url:_this_ref.reference}).then(function(data){
+              $http.post('https://firebase.shawacademy.com/get',  {data_url:_this_ref.reference}).then(function(data){
                 if(event == "value"){
                   var jsonData = _this.getDataFromRelativePosition(_this_ref.reference,data.data)
                   _this_ref.callback(null,jsonData)
@@ -39,7 +39,7 @@ myApp.service("firebaseService", function($http,md5){
                 _this_db.onNSP.emit('on', {absolute_path: _this_ref.reference, event_type :event});
                 var connection = md5.createHash(_this_ref.reference + event)
                 _this_db.onNSP.on(connection, function(data){
-                    $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
+                    $http.post('https://firebase.shawacademy.com/get',  data).then(function(data){
                       var jsonData = _this.getDataFromRelativePosition(_this_ref.reference,data.data)
                       if(_this_ref.isReferenceOn){
                         _this_ref.callback(null,jsonData);
@@ -62,7 +62,7 @@ myApp.service("firebaseService", function($http,md5){
               _this_ref.isReferenceOn = true
               _this_db.onNSP.emit('on', {absolute_path: _this_ref.reference, event_type :event});
                 _this_db.onNSP.on("onData", function(data){
-                    $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
+                    $http.post('https://firebase.shawacademy.com/get',  data).then(function(data){
                       var jsonData = _this.getDataFromRelativePosition(_this_ref.reference,data.data)
                       if(_this_ref.isReferenceOn){
                         _this.off()
@@ -103,17 +103,17 @@ myApp.service("firebaseService", function($http,md5){
 
   this.set = function(absolutePath,data,callback){
     var transportObj = {reference:absolutePath, body:data};
-    $http.post('http://firebase.shawacademy.com/set',  transportObj);
+    $http.post('https://firebase.shawacademy.com/set',  transportObj);
   }
 
   this.update = function(absolutePath, data, callback){
     var transportObj = {reference:absolutePath, body:data};
-    $http.post('http://firebase.shawacademy.com/update',  transportObj);
+    $http.post('https://firebase.shawacademy.com/update',  transportObj);
   }
 
   this.push = function(absolutePath, data, callback){
     var transportObj = {reference:absolutePath, body:data};
-    $http.post('http://firebase.shawacademy.com/push',  transportObj);
+    $http.post('https://firebase.shawacademy.com/push',  transportObj);
   }
 
 })
