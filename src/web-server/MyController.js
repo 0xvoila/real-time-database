@@ -1,4 +1,4 @@
-var myApp = angular.module('myApp',[]);
+var myApp = angular.module('myApp',['angular-md5']);
 
 var myController = myApp.controller('myController',function($scope,firebaseService){
 

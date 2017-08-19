@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="./angular-md5.js"></script>
     <link rel="stylesheet" href="./css.css"></link>
     <script src="./MyController.js"></script>
     <script src="./angular-module/firebase-sdk.js"></script>
@@ -50,14 +51,14 @@
                 </div>
                 <div class="panel-footer">
                     <div class="input-group">
-                   
+
                             <input ng-model="thingToSay" id="webinarChatInput" type="text" class="form-control input-sm" placeholder="Type your message here..." />
                             <span class="input-group-btn">
                                 <button class="btn btn-warning btn-sm" id="btn-chat" ng-click="submitChat('webinarChatInput')">
                                     Send</button>
                             </span>
 
-                      
+
                     </div>
                 </div>
             </div>

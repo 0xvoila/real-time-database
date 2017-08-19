@@ -1,6 +1,6 @@
 var myApp = angular.module('myApp');
 
-myApp.service("firebaseService", function($http){
+myApp.service("firebaseService", function($http,md5){
 
   this.onNSP = null;
   this.database = function(database){
@@ -37,7 +37,8 @@ myApp.service("firebaseService", function($http){
 
                 }
                 _this_db.onNSP.emit('on', {absolute_path: _this_ref.reference, event_type :event});
-                _this_db.onNSP.on("onData", function(data){
+                var connection = md5.createHash(_this_ref.reference + event)
+                _this_db.onNSP.on(connection, function(data){
                     $http.post('http://firebase.shawacademy.com/get',  data).then(function(data){
                       var jsonData = _this.getDataFromRelativePosition(_this_ref.reference,data.data)
                       if(_this_ref.isReferenceOn){
