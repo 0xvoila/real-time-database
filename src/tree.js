@@ -152,7 +152,7 @@ var Tree = function(){
         var event = eventJson.self[i]
         console.log(node.data.key + " " + event)
         var eventHash = md5(node.data.key + event)
-        node.events[eventHash] = {data_url : node.data.key,event:event}
+        node.events[event] = {data_url : node.data.key,event:event,connection:eventHash}
       }
     }
 
@@ -163,13 +163,13 @@ var Tree = function(){
           var event = eventJson.parent[i]
           console.log(parentNode.data.key + " " + event)
           var eventHash = md5(parentNode.data.key + event)
-          parentNode.events[eventHash] = {data_url:node.data.key ,event:event}
+          parentNode.events[event] = {data_url:node.data.key ,event:event, connection:eventHash}
         }
         else {
           var event = eventJson.parent[i]
           console.log(parentNode.data.key + " " + event)
           var eventHash = md5(parentNode.data.key + event)
-          parentNode.events[eventHash] = {data_url:parentNode.data.key, event:event}
+          parentNode.events[event] = {data_url:parentNode.data.key, event:event, connection:eventHash}
         }
 
       }
@@ -182,7 +182,7 @@ var Tree = function(){
           var event = eventJson.grandParents[i]
           console.log(grandParentNode.data.key + " " + event)
           var eventHash = md5(grandParentNode.data.key + event)
-          grandParentNode.events[eventHash] = {data_url:grandParentNode.data.key,event:event}
+          grandParentNode.events[event] = {data_url:grandParentNode.data.key,event:event, connection:eventHash}
         }
         grandParentNode = grandParentNode.parent;
       }
@@ -306,8 +306,8 @@ var Tree = function(){
   this.breadthFirstEventTrigger = function(node, _callback){
 
     async.each(node.children, function(child,callback){
-      async.eachOf(child.events, function(item,hashKey,callback){
-        var data = {absolute_path:child.data.key , data_url : item.data_url, event:item.event, connection:hashKey}
+      async.eachOf(child.events, function(item,event,callback){
+        var data = {absolute_path:child.data.key , data_url : item.data_url, event:event, connection:item.connection}
         helperObj.postUpdates(data,callback)
       },function(error, result){
         if(error) throw error
