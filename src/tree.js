@@ -150,6 +150,7 @@ var Tree = function(){
     if(eventJson.self){
       for(var i=0;i<eventJson.self.length;i++){
         var event = eventJson.self[i]
+        console.log(node.data.key + " " + event)
         var eventHash = md5(node.data.key + event)
         node.events[eventHash] = {data_url : node.data.key,event:event}
       }
@@ -160,11 +161,13 @@ var Tree = function(){
       for(var i=0;i<eventJson.parent.length;i++){
         if(eventJson.parent[i] == 'child_added' || eventJson.parent[i] == "child_changed" || eventJson.parent[i] == "child_removed"){
           var event = eventJson.parent[i]
+          console.log(parentNode.data.key + " " + event)
           var eventHash = md5(parentNode.data.key + event)
           parentNode.events[eventHash] = {data_url:node.data.key ,event:event}
         }
         else {
           var event = eventJson.parent[i]
+          console.log(parentNode.data.key + " " + event)
           var eventHash = md5(parentNode.data.key + event)
           parentNode.events[eventHash] = {data_url:parentNode.data.key, event:event}
         }
@@ -177,6 +180,7 @@ var Tree = function(){
       while(grandParentNode != null){
         for(var i=0;i<eventJson.grandParents.length;i++){
           var event = eventJson.grandParents[i]
+          console.log(grandParentNode.data.key + " " + event)
           var eventHash = md5(grandParentNode.data.key + event)
           grandParentNode.events[eventHash] = {data_url:grandParentNode.data.key,event:event}
         }
