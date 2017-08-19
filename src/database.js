@@ -82,13 +82,13 @@ var database = (function(){
     )
   }
 
-  this.createSnapshot = function(connection,path,whereQuery, limitLast, _callback){
+  this.createSnapshot = function(connection,path,whereQuery, limitToLast, _callback){
 
     var helperObj = helper();
     async.waterfall([
       function(callback){
         var firebaseRecord = { absolute_path: new RegExp("^" + path)};
-        connection.collection("test").find(firebaseRecord,{"absolute_path":1,"_id":0,"value":1}).snapshot().toArray(function(error, result){
+        connection.collection("test").find(firebaseRecord,{"absolute_path":1,"_id":0,"value":1}).limit(limitToLast).snapshot().toArray(function(error, result){
           callback(null,result)
         });
       }
