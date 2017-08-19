@@ -204,10 +204,33 @@ var Tree = function(){
       var grandParentNode = parentNode.parent
       while(grandParentNode != null){
         for(var i=0;i<eventJson.grandParents.length;i++){
+          var skipEvent = false
           var event = eventJson.grandParents[i]
-          console.log(grandParentNode.data.key + " " + event)
-          var eventHash = md5(grandParentNode.data.key + event)
-          grandParentNode.events[event] = {data_url:grandParentNode.data.key,event:event, connection:eventHash}
+           if(event == "child_added"){
+            // remove child_updated and child_removed from grandParent node
+            var grandParentEvents = grandParentNode.events;
+            for(key in grandParentEvents){
+              if(key == "child_changed" || key == "child_removed"){
+                delete grandParentNode.events[key]
+              }
+            }
+          }
+
+          else if (event == "child_removed" || event == "child_changed"){
+            // Check if node events already have child_added, if yes then skip these events
+            var grandParentEvents = grandParentNode.events;
+            for(key in grandParentEvents){
+              if(key == "child_added"){
+                skipEvent = true
+              }
+            }
+          }
+
+          if(!skipEvent){
+
+            var eventHash = md5(grandParentNode.data.key + event)
+            grandParentNode.events[event] = {data_url:grandParentNode.data.key,event:event, connection:eventHash}
+          }
         }
         grandParentNode = grandParentNode.parent;
       }
