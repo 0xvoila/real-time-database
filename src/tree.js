@@ -159,11 +159,36 @@ var Tree = function(){
     var parentNode = node.parent
     if(eventJson.parent && parentNode){
       for(var i=0;i<eventJson.parent.length;i++){
+        var skipEvent = false
         if(eventJson.parent[i] == 'child_added' || eventJson.parent[i] == "child_changed" || eventJson.parent[i] == "child_removed"){
           var event = eventJson.parent[i]
-          console.log(parentNode.data.key + " " + event)
-          var eventHash = md5(parentNode.data.key + event)
-          parentNode.events[event] = {data_url:node.data.key ,event:event, connection:eventHash}
+
+          if(event == "child_added"){
+            // remove child_updated and child_removed from grandParent node
+            var parentEvents = parentNode.events;
+            for(key in parentEvents){
+              if(key == "child_changed" || key == "child_removed"){
+                delete parentNode.events[key]
+              }
+            }
+          }
+
+          else if (event == "child_removed" || event == "child_changed"){
+            // Check if node events already have child_added, if yes then skip these events
+            var parentEvents = parentNode.events;
+            for(key in parentEvents){
+              if(key == "child_added"){
+                skipEvent = true
+              }
+            }
+          }
+
+          if(!skipEvent){
+
+            var eventHash = md5(parentNode.data.key + event)
+            parentNode.events[event] = {data_url:node.data.key ,event:event, connection:eventHash}
+          }
+
         }
         else {
           var event = eventJson.parent[i]
