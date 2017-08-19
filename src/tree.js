@@ -175,8 +175,8 @@ var Tree = function(){
     if(eventJson.grandParents && parentNode && parentNode.parent){
       var grandParentNode = parentNode.parent
       while(grandParentNode != null){
-        for(var i=0;i<eventJson.grandParentNodes.length;i++){
-          var event = eventJson.grandParentNode[i]
+        for(var i=0;i<eventJson.grandParents.length;i++){
+          var event = eventJson.grandParents[i]
           var eventHash = md5(grandParentNode.data.key + event)
           grandParentNode.events[eventHash] = {data_url:grandParentNode.data.key,event:event}
         }
